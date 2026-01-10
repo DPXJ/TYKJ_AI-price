@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试页面</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .block-badge-corner {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            font-size: 11px;
+            padding: 4px 12px;
+            border-radius: 0 10px 0 10px;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+            z-index: 2;
+        }
+        .test-block {
+            position: relative;
+            background: #f0f7ff;
+            padding: 20px;
+            border: 2px solid #3b82f6;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>CSS 样式测试</h1>
+    
+    <div class="test-card">
+        <h2>✅ 文件加载测试</h2>
+        <p class="success">如果您能看到这个页面，说明 HTML 文件加载正常。</p>
+    </div>
+    
+    <div class="test-card">
+        <h2>🏷️ 右上角标签测试</h2>
+        <div class="test-block">
+            <div class="block-badge-corner">离我最近</div>
+            <h3>腾跃示范基地 - 1号地块</h3>
+            <p>辣椒</p>
+        </div>
+        <p><strong>预期效果：</strong>橙色标签应该在右上角</p>
+    </div>
+    
+    <div class="test-card">
+        <h2>📋 文件路径信息</h2>
+        <p><strong>当前文件：</strong><span id="currentPath"></span></p>
+        <p><strong>主文件路径：</strong>d:\Lan_Company\AI-TYKJ\07-AI灾害预警\index.html</p>
+    </div>
+    
+    <div class="test-card">
+        <h2>🔗 打开主页面</h2>
+        <button onclick="window.location.href='index.html'" style="padding: 10px 20px; background: #3b82f6; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 16px;">
+            打开 index.html
+        </button>
+    </div>
+    
+    <script>
+        document.getElementById('currentPath').textContent = window.location.href;
+    </script>
+</body>
+</html>
+

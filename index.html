@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>移动端产品原型演示</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <div class="prototype-container">
+        <!-- 左侧导航菜单 -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-mobile-alt"></i> 功能导航</h3>
+                <button class="toggle-btn" id="toggleBtn">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="nav-item main-item clickable-main" data-page="home" onclick="loadPage('home')">
+                        <i class="fas fa-home"></i>
+                        <span>首页</span>
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="sub-menu">
+                        <div class="nav-item sub-item" data-page="fieldWorkstation">
+                            <i class="fas fa-microchip"></i>
+                            <span>田间工作站</span>
+                        </div>
+                        <div class="nav-item sub-item" data-page="farmCalendar">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>农事日历</span>
+                        </div>
+                        <div class="nav-item sub-item" data-page="plantingPlan">
+                            <i class="fas fa-seedling"></i>
+                            <span>种植计划</span>
+                        </div>
+                        <div class="nav-item sub-item" data-page="addFarmActivity">
+                            <i class="fas fa-plus-circle"></i>
+                            <span>添加农事活动</span>
+                        </div>
+                        <div class="nav-item sub-item" data-page="aiServiceEffect">
+                            <i class="fas fa-book"></i>
+                            <span>农事方案库</span>
+                        </div>
+                        <div class="nav-item sub-item" data-page="farmServiceRecord">
+                            <i class="fas fa-plus-square"></i>
+                            <span>新建农事方案</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 新增：商城、AI诊断、工作台、我的 入口 -->
+                <!-- 商城菜单已隐藏 -->
+                <div class="nav-section">
+                    <div class="nav-item main-item" data-page="ai">
+                        <i class="fas fa-robot"></i>
+                        <span>AI</span>
+                        <i class="fas fa-chevron-down arrow"></i>
+                    </div>
+                    <div class="sub-menu">
+                        <div class="nav-item sub-item" data-page="aiChatCenter">
+                            <i class="fas fa-comments"></i>
+                            <span>AI对话</span>
+                        </div>
+                        <div class="nav-item sub-item" data-page="agentMarket">
+                            <i class="fas fa-th-large"></i>
+                            <span>智能体广场</span>
+                        </div>
+                        <div class="nav-item sub-item" data-page="mySubscriptions">
+                            <i class="fas fa-star"></i>
+                            <span>我的订阅</span>
+                        </div>
+                        <div class="nav-item sub-item" onclick="loadWeatherDisasterHome()">
+                            <i class="fas fa-cloud-sun-rain"></i>
+                            <span>气象灾害预警</span>
+                        </div>
+                        <div class="nav-item sub-item" onclick="enterPriceAgent('小麦')">
+                            <i class="fas fa-dollar-sign"></i>
+                            <span>农产品价格智能体</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-item main-item" data-page="workbench">
+                        <i class="fas fa-briefcase"></i>
+                        <span>工作台</span>
+                    </div>
+                </div>
+                <div class="nav-section">
+                    <div class="nav-item main-item" data-page="profile">
+                        <i class="fas fa-user"></i>
+                        <span>我的</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        
+        <!-- 手机壳容器 -->
+        <div class="phone-container">
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="phone-content" id="phoneContent">
+                        <!-- 页面内容将通过JavaScript动态加载 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="scripts/main.js"></script>
+</body>
+</html> 

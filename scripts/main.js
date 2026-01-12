@@ -1067,9 +1067,17 @@ const pageData = {
                     <div class="recommended-agents price-quick-access">
                         <div class="agents-hint">快速访问</div>
                         <div class="agents-grid">
-                            <div class="agent-card price-report-card" onclick="loadPriceReportPage('小麦', '河南')">
-                                <i class="fas fa-file-alt"></i>
-                                <span>小麦价格AI分析报告</span>
+                            <div class="agent-card" onclick="loadWeatherDisasterHome()">
+                                <i class="fas fa-cloud-sun-rain"></i>
+                                <span>气象灾害预警</span>
+                            </div>
+                            <div class="agent-card" onclick="loadPage('pestDetect')">
+                                <i class="fas fa-bug"></i>
+                                <span>病虫害诊断</span>
+                            </div>
+                            <div class="agent-card" onclick="loadAgentChatPage('weed-control-analysis', '除草成效分析')">
+                                <i class="fas fa-spray-can"></i>
+                                <span>化学除草分析</span>
                             </div>
                         </div>
                     </div>
@@ -1132,9 +1140,17 @@ const pageData = {
                     <div class="recommended-agents price-quick-access">
                         <div class="agents-hint">快速访问</div>
                         <div class="agents-grid">
-                            <div class="agent-card price-report-card" onclick="loadPriceReportPage('玉米', '东北')">
-                                <i class="fas fa-file-alt"></i>
-                                <span>玉米价格AI分析报告</span>
+                            <div class="agent-card" onclick="loadWeatherDisasterHome()">
+                                <i class="fas fa-cloud-sun-rain"></i>
+                                <span>气象灾害预警</span>
+                            </div>
+                            <div class="agent-card" onclick="loadPage('pestDetect')">
+                                <i class="fas fa-bug"></i>
+                                <span>病虫害诊断</span>
+                            </div>
+                            <div class="agent-card" onclick="loadAgentChatPage('weed-control-analysis', '除草成效分析')">
+                                <i class="fas fa-spray-can"></i>
+                                <span>化学除草分析</span>
                             </div>
                         </div>
                     </div>
@@ -1197,9 +1213,17 @@ const pageData = {
                     <div class="recommended-agents price-quick-access">
                         <div class="agents-hint">快速访问</div>
                         <div class="agents-grid">
-                            <div class="agent-card price-report-card" onclick="loadPriceReportPage('大豆', '黑龙江')">
-                                <i class="fas fa-file-alt"></i>
-                                <span>大豆价格AI分析报告</span>
+                            <div class="agent-card" onclick="loadWeatherDisasterHome()">
+                                <i class="fas fa-cloud-sun-rain"></i>
+                                <span>气象灾害预警</span>
+                            </div>
+                            <div class="agent-card" onclick="loadPage('pestDetect')">
+                                <i class="fas fa-bug"></i>
+                                <span>病虫害诊断</span>
+                            </div>
+                            <div class="agent-card" onclick="loadAgentChatPage('weed-control-analysis', '除草成效分析')">
+                                <i class="fas fa-spray-can"></i>
+                                <span>化学除草分析</span>
                             </div>
                         </div>
                     </div>
@@ -1252,7 +1276,36 @@ const pageData = {
             </div>
         `
     },
-    
+
+    // 价格对话页面
+    priceChat: {
+        title: '价格智能体对话',
+        subtitle: '',
+        content: `
+            <div class="mobile-page price-chat-page">
+                <div class="mobile-header">
+                    <button class="back-btn" onclick="goBackToPriceHome()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="header-title">
+                        <h1 id="priceChatTitle">小麦价格智能体</h1>
+                    </div>
+                </div>
+                <div class="mobile-content price-chat-content">
+                    <div class="price-chat-messages" id="priceChatMessages">
+                        <!-- 消息将在这里显示 -->
+                    </div>
+                </div>
+                <div class="price-chat-input">
+                    <input type="text" id="priceChatInput" placeholder="输入您的问题..." />
+                    <button class="send-btn" onclick="sendPriceChatMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        `
+    },
+
     workbench: {
         title: '工作台',
         subtitle: '工作台',
@@ -10875,22 +10928,28 @@ function createPriceExamplesModal(productName) {
     // 根据产品选择不同的示例
     const examplesMap = {
         '小麦': [
-            { question: '今天郑州小麦多少钱一斤？', icon: 'fa-dollar-sign' },
-            { question: '最近7天河南小麦价格趋势？', icon: 'fa-chart-line' },
-            { question: '现在适合卖小麦吗？', icon: 'fa-lightbulb' },
-            { question: '预测未来3天小麦价格走势', icon: 'fa-crystal-ball' }
+            { title: '实时价格', question: '今天郑州小麦多少钱一斤？', icon: 'fa-dollar-sign' },
+            { title: '价格趋势', question: '最近7天河南小麦价格趋势？', icon: 'fa-chart-line' },
+            { title: '卖粮建议', question: '现在适合卖小麦吗？', icon: 'fa-lightbulb' },
+            { title: '价格预测', question: '预测未来3天小麦价格走势', icon: 'fa-crystal-ball' },
+            { title: '区域对比', question: '河南和山东小麦价格对比', icon: 'fa-map-marked-alt' },
+            { title: '市场分析', question: '影响小麦价格的主要因素', icon: 'fa-search-dollar' }
         ],
         '玉米': [
-            { question: '今天吉林玉米多少钱一斤？', icon: 'fa-dollar-sign' },
-            { question: '最近7天东北玉米价格趋势？', icon: 'fa-chart-line' },
-            { question: '现在适合卖玉米吗？', icon: 'fa-lightbulb' },
-            { question: '预测未来3天玉米价格走势', icon: 'fa-crystal-ball' }
+            { title: '实时价格', question: '今天吉林玉米多少钱一斤？', icon: 'fa-dollar-sign' },
+            { title: '价格趋势', question: '最近7天东北玉米价格趋势？', icon: 'fa-chart-line' },
+            { title: '卖粮建议', question: '现在适合卖玉米吗？', icon: 'fa-lightbulb' },
+            { title: '价格预测', question: '预测未来3天玉米价格走势', icon: 'fa-crystal-ball' },
+            { title: '区域对比', question: '东北和华北玉米价格对比', icon: 'fa-map-marked-alt' },
+            { title: '市场分析', question: '影响玉米价格的主要因素', icon: 'fa-search-dollar' }
         ],
         '大豆': [
-            { question: '今天黑龙江大豆多少钱一斤？', icon: 'fa-dollar-sign' },
-            { question: '最近7天大豆价格趋势？', icon: 'fa-chart-line' },
-            { question: '现在适合卖大豆吗？', icon: 'fa-lightbulb' },
-            { question: '预测未来3天大豆价格走势', icon: 'fa-crystal-ball' }
+            { title: '实时价格', question: '今天黑龙江大豆多少钱一斤？', icon: 'fa-dollar-sign' },
+            { title: '价格趋势', question: '最近7天大豆价格趋势？', icon: 'fa-chart-line' },
+            { title: '卖粮建议', question: '现在适合卖大豆吗？', icon: 'fa-lightbulb' },
+            { title: '价格预测', question: '预测未来3天大豆价格走势', icon: 'fa-crystal-ball' },
+            { title: '区域对比', question: '黑龙江和内蒙古大豆价格对比', icon: 'fa-map-marked-alt' },
+            { title: '市场分析', question: '影响大豆价格的主要因素', icon: 'fa-search-dollar' }
         ]
     };
     
@@ -10911,8 +10970,13 @@ function createPriceExamplesModal(productName) {
             <div class="price-modal-body">
                 ${examples.map(ex => `
                     <div class="price-example-item" onclick="usePriceExample('${ex.question}', '${productName}')">
-                        <i class="fas ${ex.icon}"></i>
-                        <span>${ex.question}</span>
+                        <div class="example-icon">
+                            <i class="fas ${ex.icon}"></i>
+                        </div>
+                        <div class="example-text">
+                            <div class="example-title">${ex.title}</div>
+                            <div class="example-desc">${ex.question}</div>
+                        </div>
                     </div>
                 `).join('')}
             </div>
@@ -10950,6 +11014,10 @@ function usePriceExample(question, productName) {
     const input = document.getElementById('priceHomeInput');
     if (input) {
         input.value = question;
+        // 自动触发发送
+        setTimeout(() => {
+            startPriceHomeChat(productName);
+        }, 300);
     }
 }
 
@@ -10957,14 +11025,14 @@ function usePriceExample(question, productName) {
 function startPriceHomeChat(productName) {
     const input = document.getElementById('priceHomeInput');
     const message = input ? input.value.trim() : '';
-    
+
     if (!message) {
         showNotification('请输入您的问题', 'warning');
         return;
     }
-    
-    // 跳转到价格AI分析报告页面
-    loadPriceReportPage(productName, getDefaultRegion(productName), message);
+
+    // 跳转到价格对话页面
+    loadPriceChatPage(productName, message);
 }
 
 // 获取默认地区
@@ -10975,6 +11043,123 @@ function getDefaultRegion(productName) {
         '大豆': '黑龙江'
     };
     return regionMap[productName] || '河南';
+}
+
+// 加载价格对话页面
+function loadPriceChatPage(productName, initialMessage) {
+    window.currentPriceProduct = productName;
+    loadPage('priceChat');
+    setTimeout(() => {
+        const title = document.getElementById('priceChatTitle');
+        if (title) {
+            title.textContent = `${productName}价格智能体`;
+        }
+        
+        // 发送初始消息
+        if (initialMessage) {
+            addPriceChatMessage('user', initialMessage);
+            // 模拟AI回复
+            setTimeout(() => {
+                simulatePriceChatResponse(productName, initialMessage);
+            }, 1000);
+        }
+    }, 100);
+}
+
+// 返回价格主页
+function goBackToPriceHome() {
+    const productName = window.currentPriceProduct || '小麦';
+    const pageMap = {
+        '小麦': 'wheatPriceAgent',
+        '玉米': 'cornPriceAgent',
+        '大豆': 'soyPriceAgent'
+    };
+    loadPage(pageMap[productName] || 'wheatPriceAgent');
+}
+
+// 添加价格对话消息
+function addPriceChatMessage(sender, content) {
+    const container = document.getElementById('priceChatMessages');
+    if (!container) return;
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `chat-message ${sender}-message`;
+    
+    if (sender === 'ai') {
+        messageDiv.innerHTML = `
+            <div class="message-avatar">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="message-bubble">${content}</div>
+        `;
+    } else {
+        messageDiv.innerHTML = `
+            <div class="message-bubble">${content}</div>
+        `;
+    }
+    
+    container.appendChild(messageDiv);
+    container.scrollTop = container.scrollHeight;
+}
+
+// 发送价格对话消息
+function sendPriceChatMessage() {
+    const input = document.getElementById('priceChatInput');
+    const message = input ? input.value.trim() : '';
+    
+    if (!message) return;
+    
+    const productName = window.currentPriceProduct || '小麦';
+    addPriceChatMessage('user', message);
+    input.value = '';
+    
+    // 模拟AI回复
+    setTimeout(() => {
+        simulatePriceChatResponse(productName, message);
+    }, 1000);
+}
+
+// 模拟价格对话响应
+function simulatePriceChatResponse(productName, question) {
+    const container = document.getElementById('priceChatMessages');
+    if (!container) return;
+    
+    // 添加加载状态
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'chat-message ai-message loading';
+    loadingDiv.id = 'loading-message';
+    loadingDiv.innerHTML = `
+        <div class="message-avatar">
+            <i class="fas fa-robot"></i>
+        </div>
+        <div class="message-bubble">
+            <div class="typing-indicator">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    `;
+    container.appendChild(loadingDiv);
+    container.scrollTop = container.scrollHeight;
+    
+    // 2秒后显示回复
+    setTimeout(() => {
+        loadingDiv.remove();
+        
+        let response = '';
+        if (question.includes('多少钱') || question.includes('价格')) {
+            response = `根据最新市场数据，${productName}的价格情况如下：\n\n📊 当前价格：¥2.65/斤\n📈 涨跌幅：+0.08 (+3.1%)\n🌍 地区：河南\n\n价格分析：受近期降雨天气影响，${productName}价格整体呈现上涨趋势。建议继续关注后续天气变化及市场动态。`;
+        } else if (question.includes('趋势') || question.includes('走势')) {
+            response = `${productName}最近7天的价格趋势如下：\n\n📈 整体趋势：波动上涨\n📊 7日涨幅：+5.2%\n💡 关键因素：\n  • 降雨影响收购进度\n  • 储备粮轮换启动\n  • 需求稳定增长\n\n预计短期内价格将维持稳中有涨的态势。`;
+        } else if (question.includes('适合卖') || question.includes('决策')) {
+            response = `根据当前市场情况，我的建议如下：\n\n✅ 建议：适当惜售\n\n📌 理由：\n  1. 当前价格处于阶段性高位\n  2. 后续仍有上涨空间\n  3. 天气因素持续利好\n\n⚠️ 注意事项：\n  • 密切关注天气变化\n  • 留意政策调控信息\n  • 保持与收购方的沟通`;
+        } else if (question.includes('预测') || question.includes('未来')) {
+            response = `${productName}未来3天价格预测：\n\n📊 预测价格：\n  • 明天：¥2.66-2.68/斤\n  • 后天：¥2.67-2.70/斤\n  • 第3天：¥2.68-2.71/斤\n\n💡 预测依据：\n  • 天气持续影响\n  • 市场需求稳定\n  • 库存水平偏低\n\n建议您根据自身情况合理安排出售时机。`;
+        } else {
+            response = `感谢您的提问！关于${productName}，我可以为您提供：\n\n📊 实时价格查询\n📈 价格走势分析\n💡 买卖决策建议\n🔮 价格趋势预测\n\n请告诉我您想了解哪方面的信息？`;
+        }
+        
+        addPriceChatMessage('ai', response);
+    }, 2000);
 }
 
 // 添加价格智能体消息

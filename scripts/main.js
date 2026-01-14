@@ -1067,6 +1067,10 @@ const pageData = {
                     <div class="recommended-agents price-quick-access">
                         <div class="agents-hint">快速访问</div>
                         <div class="agents-grid">
+                            <div class="agent-card" onclick="loadPriceQueryPage('小麦')">
+                                <i class="fas fa-search-dollar"></i>
+                                <span>历史价格查询</span>
+                            </div>
                             <div class="agent-card" onclick="loadWeatherDisasterHome()">
                                 <i class="fas fa-cloud-sun-rain"></i>
                                 <span>气象灾害预警</span>
@@ -1266,7 +1270,7 @@ const pageData = {
                     <div class="header-title">
                         <h1 id="priceReportTitle">价格AI分析报告</h1>
                     </div>
-                    <button class="share-btn" id="priceReportShareBtn" onclick="showComingSoon('分享报告')" style="display:none;">
+                    <button class="share-btn" id="priceReportShareBtn" onclick="sharePriceReport()" style="display:none;">
                         <i class="fas fa-share-alt"></i>
                     </button>
                 </div>
@@ -1301,6 +1305,132 @@ const pageData = {
                     <button class="send-btn" onclick="sendPriceChatMessage()">
                         <i class="fas fa-paper-plane"></i>
                     </button>
+                </div>
+            </div>
+        `
+    },
+
+    // 历史价格查询页面
+    priceQuery: {
+        title: '历史价格查询',
+        subtitle: '',
+        content: `
+            <div class="mobile-page price-query-page">
+                <div class="mobile-header">
+                    <button class="back-btn" onclick="goBackToPriceHome()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="header-title">
+                        <h1 id="priceQueryTitle">小麦历史价格查询</h1>
+                    </div>
+                </div>
+                <div class="mobile-content price-query-content">
+                    <!-- 查询表单 -->
+                    <div class="query-form-section">
+                        <h3><i class="fas fa-search"></i> 查询条件</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">地区选择</label>
+                            <div class="cascader-container">
+                                <select id="provinceSelect" class="form-select" onchange="updateCityOptions()">
+                                    <option value="">选择省份</option>
+                                    <option value="河南省">河南省</option>
+                                    <option value="山东省">山东省</option>
+                                    <option value="河北省">河北省</option>
+                                </select>
+                                <select id="citySelect" class="form-select" onchange="updateCountyOptions()">
+                                    <option value="">选择城市</option>
+                                </select>
+                                <select id="countySelect" class="form-select">
+                                    <option value="">选择区县</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">查询类型</label>
+                            <div class="query-type-tabs">
+                                <button class="query-type-tab active" data-type="single" onclick="switchQueryType('single')">
+                                    单年查询
+                                </button>
+                                <button class="query-type-tab" data-type="trend" onclick="switchQueryType('trend')">
+                                    趋势分析
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 单年查询表单 -->
+                        <div id="singleQueryForm" class="query-form-item active">
+                            <div class="form-group">
+                                <label class="form-label">选择年份</label>
+                                <select id="yearSelect" class="form-select">
+                                    <option value="">选择年份</option>
+                                    <option value="2025">2025年</option>
+                                    <option value="2024">2024年</option>
+                                    <option value="2023">2023年</option>
+                                    <option value="2022">2022年</option>
+                                    <option value="2021">2021年</option>
+                                    <option value="2020">2020年</option>
+                                    <option value="2019">2019年</option>
+                                    <option value="2018">2018年</option>
+                                    <option value="2017">2017年</option>
+                                    <option value="2016">2016年</option>
+                                    <option value="2015">2015年</option>
+                                    <option value="2014">2014年</option>
+                                    <option value="2013">2013年</option>
+                                    <option value="2012">2012年</option>
+                                    <option value="2011">2011年</option>
+                                    <option value="2010">2010年</option>
+                                    <option value="2009">2009年</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- 趋势分析表单 -->
+                        <div id="trendQueryForm" class="query-form-item">
+                            <div class="form-group">
+                                <label class="form-label">年份范围</label>
+                                <div class="year-range-container">
+                                    <select id="startYearSelect" class="form-select">
+                                        <option value="">起始年份</option>
+                                        <option value="2009">2009年</option>
+                                        <option value="2010">2010年</option>
+                                        <option value="2011">2011年</option>
+                                        <option value="2012">2012年</option>
+                                        <option value="2013">2013年</option>
+                                        <option value="2014">2014年</option>
+                                        <option value="2015">2015年</option>
+                                        <option value="2016">2016年</option>
+                                        <option value="2017">2017年</option>
+                                        <option value="2018">2018年</option>
+                                        <option value="2019">2019年</option>
+                                        <option value="2020">2020年</option>
+                                    </select>
+                                    <span class="range-separator">至</span>
+                                    <select id="endYearSelect" class="form-select">
+                                        <option value="">结束年份</option>
+                                        <option value="2020">2020年</option>
+                                        <option value="2021">2021年</option>
+                                        <option value="2022">2022年</option>
+                                        <option value="2023">2023年</option>
+                                        <option value="2024">2024年</option>
+                                        <option value="2025">2025年</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="query-submit-btn" onclick="executePriceQuery()">
+                            <i class="fas fa-search"></i>
+                            <span>查询</span>
+                        </button>
+                    </div>
+
+                    <!-- 查询结果区域 -->
+                    <div class="query-result-section" id="queryResultSection" style="display: none;">
+                        <h3><i class="fas fa-chart-line"></i> 查询结果</h3>
+                        <div id="queryResultContent"></div>
+                    </div>
                 </div>
             </div>
         `
@@ -9749,8 +9879,16 @@ function shareToMoments() {
 function shareAsImage() {
     closeShareModal();
     
+    // 检查是否有价格报告数据
+    if (currentPriceReportData) {
+        // 显示价格报告图片预览弹窗
+        showPriceReportImagePreview(currentPriceReportData);
+        return;
+    }
+    
+    // 检查是否有气象数据
     if (!currentWeatherDetailData) {
-        showNotification('无法获取气象数据', 'error');
+        showNotification('无法获取数据', 'error');
         return;
     }
     
@@ -9918,6 +10056,116 @@ function closeImagePreviewModal() {
             modal.remove();
         }, 300);
     }
+}
+
+// 显示价格报告图片预览
+function showPriceReportImagePreview(data) {
+    const phoneContent = document.getElementById('phoneContent');
+    if (!phoneContent) return;
+    
+    const changeIcon = data.change >= 0 ? '↑' : '↓';
+    const changeText = data.change >= 0 ? '上涨' : '下跌';
+    const changeClass = data.change >= 0 ? 'positive' : 'negative';
+    
+    // 计算平均价格
+    const avgPrice = data.historyData && data.historyData.length > 0 
+        ? (data.historyData.reduce((sum, item) => sum + item.price, 0) / data.historyData.length).toFixed(2)
+        : data.currentPrice.toFixed(2);
+    
+    // 创建图片预览弹窗
+    const imageModal = document.createElement('div');
+    imageModal.className = 'image-preview-modal';
+    imageModal.id = 'imagePreviewModal';
+    imageModal.innerHTML = `
+        <div class="image-preview-overlay" onclick="closeImagePreviewModal()"></div>
+        <div class="image-preview-content">
+            <div class="image-preview-header">
+                <h3>分享图片预览</h3>
+                <button class="preview-close" onclick="closeImagePreviewModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="image-preview-body">
+                <div class="share-image-card" id="shareImageCard">
+                    <div class="share-card-header">
+                        <div class="share-logo">
+                            <i class="fas ${data.productName === '小麦' ? 'fa-wheat-awn' : data.productName === '玉米' ? 'fa-corn' : 'fa-seedling'}"></i>
+                        </div>
+                        <div class="share-title">
+                            <h2>${data.productName}价格AI分析报告</h2>
+                            <p>智能分析 · 精准预测</p>
+                        </div>
+                    </div>
+                    
+                    <div class="share-card-content">
+                        <div class="share-location-info">
+                            <div class="share-region-tag">
+                                <span>${data.region || '全国'}</span>
+                            </div>
+                            <div class="share-location-text">
+                                <h3>${data.productName}价格行情</h3>
+                                <p>${new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                            </div>
+                        </div>
+                        
+                        <div class="share-price-info">
+                            <div class="share-price-item">
+                                <span class="price-label">当前价格</span>
+                                <span class="price-value">¥${data.currentPrice.toFixed(2)}/斤</span>
+                            </div>
+                            <div class="share-price-item">
+                                <span class="price-label">平均价格</span>
+                                <span class="price-value">¥${avgPrice}/斤</span>
+                            </div>
+                            <div class="share-price-item ${changeClass}">
+                                <span class="price-label">涨跌幅度</span>
+                                <span class="price-value">${changeIcon} ${Math.abs(data.changePercent || 0).toFixed(1)}%</span>
+                            </div>
+                        </div>
+                        
+                        ${data.shortTermForecast ? `
+                        <div class="share-forecast-info">
+                            <i class="fas fa-chart-line"></i>
+                            <span>${data.shortTermForecast}</span>
+                        </div>
+                        ` : ''}
+                        
+                        <div class="share-qrcode-section">
+                            <div class="share-qrcode">
+                                <div class="qrcode-placeholder">
+                                    <i class="fas fa-qrcode"></i>
+                                </div>
+                            </div>
+                            <div class="share-qrcode-text">
+                                <p>扫码查看详情</p>
+                                <p class="qrcode-hint">长按识别二维码</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="share-card-footer">
+                        <p>更新时间：${new Date().toLocaleString('zh-CN')}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="image-preview-actions">
+                <button class="preview-action-btn download-btn" onclick="downloadShareImage()">
+                    <i class="fas fa-download"></i>
+                    <span>保存图片</span>
+                </button>
+                <button class="preview-action-btn secondary" onclick="closeImagePreviewModal()">
+                    <span>取消</span>
+                </button>
+            </div>
+        </div>
+    `;
+    
+    phoneContent.appendChild(imageModal);
+    
+    // 延迟显示，触发动画
+    setTimeout(() => {
+        imageModal.classList.add('active');
+    }, 10);
 }
 
 // 下载分享图片
@@ -10707,6 +10955,14 @@ function shareWeatherReport() {
     showShareOptions();
 }
 
+// 分享价格报告
+function sharePriceReport() {
+    showShareOptions();
+}
+
+// 存储当前价格报告数据
+let currentPriceReportData = null;
+
 // 显示位置选择器
 function showLocationSelector() {
     showNotification('位置切换功能开发中', 'info');
@@ -10714,16 +10970,45 @@ function showLocationSelector() {
 
 // ==================== 农产品价格智能体相关函数 ====================
 
+// 小麦主产区数据（省份和县区）
+const wheatMainRegions = {
+    '全国': {
+        name: '全国',
+        counties: []
+    },
+    '河南': {
+        name: '河南',
+        counties: ['周口', '新乡', '开封', '商丘']
+    },
+    '山东': {
+        name: '山东',
+        counties: ['潍坊', '德州', '滨州', '济宁']
+    },
+    '河北': {
+        name: '河北',
+        counties: ['石家庄', '衡水', '邢台']
+    },
+    '山西': {
+        name: '山西',
+        counties: ['运城', '临汾']
+    },
+    '江苏': {
+        name: '江苏',
+        counties: ['徐州', '连云港']
+    }
+};
+
 // 价格智能体模拟数据
 const priceAgentData = {
     '小麦': {
         name: '小麦',
-        region: '河南地区',
+        region: '河南',
         currentPrice: 2.65,
         priceUnit: '元/斤',
         change: 0.08,
         changePercent: 3.1,
         insight: '受雨雪影响，河南局部看涨',
+        shortTermForecast: '预计未来3-5天价格将继续保持上涨态势，受降雪天气影响，运输成本上升，建议密切关注天气变化及市场动态。',
         sparklineData: [2.50, 2.52, 2.55, 2.58, 2.60, 2.62, 2.65],
         historyData: [
             { date: '01-04', price: 2.50 },
@@ -10747,12 +11032,18 @@ const priceAgentData = {
             { region: '安徽', price: 2.58, trend: 'down' },
             { region: '江苏', price: 2.55, trend: 'stable' }
         ],
-        decision: {
-            type: 'hold',
-            title: '建议惜售',
-            content: '当前价格处于上升通道，预计未来3-5天还有上涨空间。建议农户暂时惜售，等待更好价格。',
-            risks: ['天气变化可能影响运输', '市场需求波动'],
-            opportunities: ['春节前备货需求旺盛', '南方降雪影响供应']
+        aiAdvice: {
+            trend: 'up',
+            summary: '短期内价格将保持上涨趋势',
+            details: [
+                '天气因素：降雪天气影响运输，推高物流成本，支撑价格上涨',
+                '市场需求：春节前备货需求旺盛，面粉企业采购积极',
+                '供应情况：农户惜售情绪较浓，市场流通粮源偏紧',
+                '政策面：收储政策平稳，市场运行正常',
+                '建议：当前价格处于合理区间，可根据自身情况选择出售时机，建议分批次出售降低风险'
+            ],
+            risks: ['天气转好后运输成本下降', '市场供应量增加', '节后需求回落'],
+            opportunities: ['春节前备货需求持续', '天气因素持续影响', '农户惜售支撑价格']
         }
     },
     '玉米': {
@@ -11562,13 +11853,15 @@ function generateHomePriceReportPreview(container, productName) {
                         <i class="fas ${changeIcon}"></i>
                         ${data.change >= 0 ? '价格上涨' : '价格下跌'}
                     </span>
-                    <span class="preview-tag">${data.decision.type === 'sell' ? '建议出货' : data.decision.type === 'buy' ? '建议收购' : '建议持有'}</span>
-                    <span class="preview-tag">数据可靠</span>
+                    <span class="preview-tag">
+                        <i class="fas fa-chart-line"></i>
+                        ${data.change >= 0 ? '短期看涨' : '短期看跌'}
+                    </span>
                 </div>
                 
                 <div class="preview-conclusion">
-                    <h4>整体结论</h4>
-                    <p>${data.decision.content}</p>
+                    <h4>短期预测</h4>
+                    <p>${data.shortTermForecast || '预计未来3-5天价格将' + (data.change >= 0 ? '保持上涨态势' : '继续小幅回调') + '，建议密切关注市场动态。'}</p>
                 </div>
                 
                 <div class="preview-price-summary">
@@ -11593,9 +11886,17 @@ function generateHomePriceReportPreview(container, productName) {
             </div>
         </div>
         
-        <!-- 推荐智能体模块 -->
-        <div class="recommended-agent-section">
-            <h4>相关智能体推荐</h4>
+        <!-- 选择其他地区按钮 -->
+        <div class="select-region-btn" onclick="showRegionSelector('${productName}')">
+            <i class="fas fa-map-marked-alt"></i>
+            <span>选择其他地区，生成AI价格报告</span>
+        </div>
+        
+        <!-- 推荐模块 -->
+        <div class="recommended-section">
+            <h4>推荐</h4>
+            
+            <!-- 智能体推荐卡片 -->
             <div class="recommended-agent-card" onclick="event.stopPropagation(); enterPriceAgent('${productName}')">
                 <div class="agent-card-icon">
                     <i class="fas ${productName === '小麦' ? 'fa-wheat-awn' : productName === '玉米' ? 'fa-corn' : 'fa-seedling'}"></i>
@@ -11618,6 +11919,128 @@ function generateHomePriceReportPreview(container, productName) {
     `;
 }
 
+// 显示地区选择器弹窗
+function showRegionSelector(productName) {
+    const regions = wheatMainRegions;
+    
+    // 创建弹窗HTML
+    const modalHTML = `
+        <div class="region-selector-modal" id="regionSelectorModal" onclick="closeRegionSelector(event)">
+            <div class="region-selector-content" onclick="event.stopPropagation()">
+                <div class="region-selector-header">
+                    <h3>选择地区</h3>
+                    <button class="close-btn" onclick="closeRegionSelector()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="region-selector-body">
+                    <div class="region-tabs">
+                        ${Object.keys(regions).map((province, index) => `
+                            <button class="region-tab ${index === 0 ? 'active' : ''}" 
+                                    onclick="switchRegionTab('${province}')" 
+                                    data-province="${province}">
+                                ${regions[province].name}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="region-counties" id="regionCounties">
+                        ${generateCountiesList('全国', productName)}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 添加到手机内容容器
+    const phoneContent = document.getElementById('phoneContent');
+    if (!phoneContent) return;
+    
+    const existingModal = document.getElementById('regionSelectorModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    phoneContent.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // 添加动画
+    setTimeout(() => {
+        const modal = document.getElementById('regionSelectorModal');
+        if (modal) {
+            modal.classList.add('show');
+        }
+    }, 10);
+}
+
+// 生成县区列表
+function generateCountiesList(province, productName) {
+    const regions = wheatMainRegions;
+    const counties = regions[province].counties;
+    
+    if (province === '全国') {
+        return `
+            <div class="county-item national" onclick="viewRegionPriceReport('${productName}', '全国', '')">
+                <div class="county-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="county-content">
+                    <div class="county-name">全国概况</div>
+                    <div class="county-desc">查看全国${productName}价格综合分析</div>
+                </div>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        `;
+    }
+    
+    return counties.map(county => `
+        <div class="county-item" onclick="viewRegionPriceReport('${productName}', '${province}', '${county}')">
+            <div class="county-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="county-content">
+                <div class="county-name">${county}</div>
+                <div class="county-desc">${province}省${county}地区</div>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    `).join('');
+}
+
+// 切换地区选项卡
+function switchRegionTab(province) {
+    // 更新选项卡状态
+    document.querySelectorAll('.region-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.province === province) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // 更新县区列表
+    const countiesContainer = document.getElementById('regionCounties');
+    if (countiesContainer) {
+        const productName = '小麦'; // 这里可以从上下文获取
+        countiesContainer.innerHTML = generateCountiesList(province, productName);
+    }
+}
+
+// 查看指定地区的价格报告
+function viewRegionPriceReport(productName, province, county) {
+    closeRegionSelector();
+    const region = county ? `${province}-${county}` : province;
+    viewPriceReportDetail(productName, region);
+}
+
+// 关闭地区选择器
+function closeRegionSelector(event) {
+    const modal = document.getElementById('regionSelectorModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
+
 // 查看价格报告详情
 function viewPriceReportDetail(productName, region) {
     loadPriceReportPage(productName, region);
@@ -11633,21 +12056,23 @@ function loadPriceReportPage(productName, region, question = '') {
 
 // 初始化价格报告
 function initPriceReport(productName, region, question = '') {
+    console.log('initPriceReport called:', productName, region);
+    
     const title = document.getElementById('priceReportTitle');
     if (title) {
         title.textContent = `${productName}价格AI分析报告`;
     }
     
     const container = document.getElementById('priceReportContent');
-    if (!container) return;
+    if (!container) {
+        console.error('价格报告容器未找到');
+        return;
+    }
     
-    // 显示生成中状态
-    showPriceReportLoading(container, productName);
-    
-    // 2秒后显示完整报告
-    setTimeout(() => {
-        generatePriceAnalysisReport(container, productName, region);
-    }, 2000);
+    console.log('开始生成价格报告...');
+    // 直接显示完整报告，不显示加载状态
+    generatePriceAnalysisReport(container, productName, region);
+    console.log('价格报告生成完成');
 }
 
 // 显示价格报告加载状态
@@ -11667,12 +12092,28 @@ function showPriceReportLoading(container, productName) {
 
 // 生成价格AI分析报告
 function generatePriceAnalysisReport(container, productName, region) {
+    console.log('generatePriceAnalysisReport called:', productName, region);
+    
     const data = priceAgentData[productName];
-    if (!data) return;
+    if (!data) {
+        console.error('未找到产品数据:', productName);
+        container.innerHTML = '<div style="padding:20px;text-align:center;">未找到产品数据</div>';
+        return;
+    }
+    
+    // 保存当前报告数据用于分享
+    currentPriceReportData = {
+        productName: productName,
+        region: region,
+        ...data
+    };
+    
+    console.log('产品数据:', data);
+    console.log('AI建议数据:', data.aiAdvice);
     
     const changeClass = data.change >= 0 ? 'positive' : 'negative';
     const changeIcon = data.change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
-    const decisionClass = data.decision.type === 'sell' ? 'sell' : data.decision.type === 'buy' ? 'buy' : 'hold';
+    const decisionClass = data.decision && data.decision.type ? (data.decision.type === 'sell' ? 'sell' : data.decision.type === 'buy' ? 'buy' : 'hold') : 'hold';
     
     // 获取地区数据
     const regionData = data.regionData || [];
@@ -11686,12 +12127,8 @@ function generatePriceAnalysisReport(container, productName, region) {
                     <h2><i class="fas fa-file-alt"></i> ${productName}价格日报</h2>
                     <div class="preview-date">${new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
                 </div>
-                <div class="preview-region-selector">
-                    <select id="regionSelect" class="region-select" onchange="switchPriceRegion('${productName}', this.value)">
-                        ${availableRegions.map(r => `
-                            <option value="${r}" ${r === region ? 'selected' : ''}>${r}</option>
-                        `).join('')}
-                    </select>
+                <div class="preview-region-display">
+                    <span class="region-tag">${data.region}</span>
                 </div>
             </div>
             
@@ -11701,13 +12138,14 @@ function generatePriceAnalysisReport(container, productName, region) {
                     <div class="price-main-info">
                         <div class="product-label">
                             <span class="product-name">${data.name}</span>
-                            <span class="product-region">${data.region}</span>
                         </div>
                         <div class="price-value-section">
                             <div class="current-price-large">¥${data.currentPrice}<span class="unit">/斤</span></div>
-                            <div class="price-change-large ${changeClass}">
+                            <div class="price-change-large price-up">
+                                <span class="change-prefix">较前一天</span>
                                 <i class="fas ${changeIcon}"></i>
-                                <span>${data.change >= 0 ? '+' : ''}${data.change} (${data.change >= 0 ? '+' : ''}${data.changePercent}%)</span>
+                                <span class="change-value">${data.change >= 0 ? '+' : ''}${data.change}</span>
+                                <span class="change-percent">(${data.change >= 0 ? '+' : ''}${data.changePercent}%)</span>
                             </div>
                         </div>
                     </div>
@@ -11717,15 +12155,15 @@ function generatePriceAnalysisReport(container, productName, region) {
                     </div>
                 </div>
                 
-                <!-- 价格走势图 -->
+                <!-- 价格趋势图 -->
                 <div class="report-chart-section">
-                    <h4><i class="fas fa-chart-line"></i> 价格走势分析</h4>
+                    <h4><i class="fas fa-chart-line"></i> 价格趋势</h4>
                     <div class="chart-container">
                         <canvas id="priceReportTrendChart" width="360" height="200"></canvas>
                     </div>
                     <div class="chart-legend">
                         <span class="legend-item"><span class="legend-dot history"></span>历史价格</span>
-                        <span class="legend-item"><span class="legend-dot forecast"></span>AI预测</span>
+                        <span class="legend-item"><span class="legend-dot forecast"></span>趋势预测</span>
                     </div>
                     <div class="chart-summary">
                         <div class="summary-item">
@@ -11793,51 +12231,47 @@ function generatePriceAnalysisReport(container, productName, region) {
                     </div>
                 </div>
                 
-                <!-- AI决策建议 -->
-                <div class="report-decision-section ${decisionClass}">
-                    <h4><i class="fas fa-robot"></i> AI决策建议</h4>
-                    <div class="decision-badge ${decisionClass}">
-                        ${data.decision.type === 'sell' ? '建议出货' : data.decision.type === 'buy' ? '建议收购' : '建议持有'}
+                <!-- AI建议 -->
+                <div class="report-ai-advice-section">
+                    <h4><i class="fas fa-robot"></i> AI建议</h4>
+                    
+                    <div class="ai-advice-summary">
+                        <div class="advice-trend-badge trend-${data.aiAdvice && data.aiAdvice.trend ? data.aiAdvice.trend : 'stable'}">
+                            <i class="fas ${data.aiAdvice && data.aiAdvice.trend === 'up' ? 'fa-arrow-up' : data.aiAdvice && data.aiAdvice.trend === 'down' ? 'fa-arrow-down' : 'fa-minus'}"></i>
+                            ${data.aiAdvice && data.aiAdvice.summary ? data.aiAdvice.summary : '价格平稳运行'}
+                        </div>
                     </div>
-                    <div class="decision-title">${data.decision.title}</div>
-                    <div class="decision-content">${data.decision.content}</div>
+                    
+                    <div class="ai-advice-details">
+                        ${(data.aiAdvice && data.aiAdvice.details ? data.aiAdvice.details : []).map(detail => `
+                            <div class="advice-detail-item">
+                                <i class="fas fa-circle"></i>
+                                <span>${detail}</span>
+                            </div>
+                        `).join('')}
+                    </div>
                     
                     <div class="decision-details-grid">
                         <div class="decision-detail-card risks">
-                            <h5><i class="fas fa-exclamation-triangle"></i> 风险提示</h5>
+                            <h5><i class="fas fa-exclamation-triangle"></i> 风险因素</h5>
                             <ul>
-                                ${data.decision.risks.map(risk => `<li>${risk}</li>`).join('')}
+                                ${(data.aiAdvice && data.aiAdvice.risks ? data.aiAdvice.risks : []).map(risk => `<li>${risk}</li>`).join('')}
                             </ul>
                         </div>
                         <div class="decision-detail-card opportunities">
                             <h5><i class="fas fa-check-circle"></i> 利好因素</h5>
                             <ul>
-                                ${data.decision.opportunities.map(opp => `<li>${opp}</li>`).join('')}
+                                ${(data.aiAdvice && data.aiAdvice.opportunities ? data.aiAdvice.opportunities : []).map(opp => `<li>${opp}</li>`).join('')}
                             </ul>
                         </div>
                     </div>
+                    
+                    <!-- 免责声明 -->
+                    <div class="disclaimer-notice">
+                        <i class="fas fa-info-circle"></i>
+                        <span>以上分析基于AI数据分析和市场洞察，仅供参考，不构成投资建议。市场价格受多种因素影响，实际交易请结合当地市场情况谨慎决策。</span>
+                    </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- 推荐智能体 -->
-        <div class="recommended-agents-section">
-            <h4>相关智能体推荐</h4>
-            <div class="recommended-banner" onclick="enterPriceAgent('玉米')">
-                <div class="banner-icon"><i class="fas fa-corn"></i></div>
-                <div class="banner-content">
-                    <div class="banner-title">玉米价格智能体</div>
-                    <div class="banner-subtitle">实时行情·趋势预测·决策建议</div>
-                </div>
-                <div class="banner-arrow"><i class="fas fa-chevron-right"></i></div>
-            </div>
-            <div class="recommended-banner" onclick="enterPriceAgent('大豆')">
-                <div class="banner-icon"><i class="fas fa-seedling"></i></div>
-                <div class="banner-content">
-                    <div class="banner-title">大豆价格智能体</div>
-                    <div class="banner-subtitle">实时行情·趋势预测·决策建议</div>
-                </div>
-                <div class="banner-arrow"><i class="fas fa-chevron-right"></i></div>
             </div>
         </div>
     `;
@@ -11964,4 +12398,531 @@ function drawPriceReportChart(data) {
 function switchPriceRegion(productName, region) {
     // 重新加载报告
     initPriceReport(productName, region);
+}
+
+// ==================== 历史价格查询模块 ====================
+
+// 历史价格数据（模拟数据，实际应从后端获取）
+const historicalPriceData = {
+    '河南省': {
+        '郑州市': {
+            '新郑市': [
+                { year: 2020, cate: '小麦', breed: '白麦', avgPrice: 1.5, unit: '斤', date: '2020-12-22' },
+                { year: 2020, cate: '小麦', breed: '白麦', avgPrice: 1.48, unit: '斤', date: '2020-06-15' },
+                { year: 2021, cate: '小麦', breed: '白麦', avgPrice: 1.65, unit: '斤', date: '2021-12-20' },
+                { year: 2022, cate: '小麦', breed: '白麦', avgPrice: 1.72, unit: '斤', date: '2022-12-18' },
+                { year: 2023, cate: '小麦', breed: '白麦', avgPrice: 1.58, unit: '斤', date: '2023-12-15' },
+                { year: 2024, cate: '小麦', breed: '白麦', avgPrice: 1.68, unit: '斤', date: '2024-12-20' },
+                { year: 2025, cate: '小麦', breed: '白麦', avgPrice: 2.65, unit: '斤', date: '2025-01-12' }
+            ],
+            '中牟县': [
+                { year: 2020, cate: '小麦', breed: '白麦', avgPrice: 1.52, unit: '斤', date: '2020-12-22' },
+                { year: 2021, cate: '小麦', breed: '白麦', avgPrice: 1.67, unit: '斤', date: '2021-12-20' },
+                { year: 2022, cate: '小麦', breed: '白麦', avgPrice: 1.75, unit: '斤', date: '2022-12-18' },
+                { year: 2023, cate: '小麦', breed: '白麦', avgPrice: 1.60, unit: '斤', date: '2023-12-15' },
+                { year: 2024, cate: '小麦', breed: '白麦', avgPrice: 1.70, unit: '斤', date: '2024-12-20' }
+            ]
+        },
+        '开封市': {
+            '兰考县': [
+                { year: 2020, cate: '小麦', breed: '白麦', avgPrice: 1.49, unit: '斤', date: '2020-12-22' },
+                { year: 2021, cate: '小麦', breed: '白麦', avgPrice: 1.63, unit: '斤', date: '2021-12-20' },
+                { year: 2022, cate: '小麦', breed: '白麦', avgPrice: 1.70, unit: '斤', date: '2022-12-18' },
+                { year: 2023, cate: '小麦', breed: '白麦', avgPrice: 1.56, unit: '斤', date: '2023-12-15' },
+                { year: 2024, cate: '小麦', breed: '白麦', avgPrice: 1.66, unit: '斤', date: '2024-12-20' }
+            ]
+        }
+    },
+    '山东省': {
+        '济南市': {
+            '章丘区': [
+                { year: 2020, cate: '小麦', breed: '白麦', avgPrice: 1.53, unit: '斤', date: '2020-12-22' },
+                { year: 2021, cate: '小麦', breed: '白麦', avgPrice: 1.68, unit: '斤', date: '2021-12-20' },
+                { year: 2022, cate: '小麦', breed: '白麦', avgPrice: 1.76, unit: '斤', date: '2022-12-18' },
+                { year: 2023, cate: '小麦', breed: '白麦', avgPrice: 1.62, unit: '斤', date: '2023-12-15' },
+                { year: 2024, cate: '小麦', breed: '白麦', avgPrice: 1.72, unit: '斤', date: '2024-12-20' }
+            ]
+        }
+    },
+    '河北省': {
+        '石家庄市': {
+            '藁城区': [
+                { year: 2020, cate: '小麦', breed: '白麦', avgPrice: 1.51, unit: '斤', date: '2020-12-22' },
+                { year: 2021, cate: '小麦', breed: '白麦', avgPrice: 1.66, unit: '斤', date: '2021-12-20' },
+                { year: 2022, cate: '小麦', breed: '白麦', avgPrice: 1.73, unit: '斤', date: '2022-12-18' },
+                { year: 2023, cate: '小麦', breed: '白麦', avgPrice: 1.59, unit: '斤', date: '2023-12-15' },
+                { year: 2024, cate: '小麦', breed: '白麦', avgPrice: 1.69, unit: '斤', date: '2024-12-20' }
+            ]
+        }
+    }
+};
+
+// 地区级联数据
+const regionCascadeData = {
+    '河南省': {
+        '郑州市': ['新郑市', '中牟县', '登封市', '荥阳市'],
+        '开封市': ['兰考县', '杞县', '尉氏县', '通许县'],
+        '洛阳市': ['偃师区', '孟津区', '新安县', '伊川县']
+    },
+    '山东省': {
+        '济南市': ['章丘区', '长清区', '平阴县', '商河县'],
+        '青岛市': ['即墨区', '胶州市', '平度市', '莱西市']
+    },
+    '河北省': {
+        '石家庄市': ['藁城区', '栾城区', '正定县', '赵县'],
+        '保定市': ['涞水县', '涞源县', '定兴县', '高碑店市']
+    }
+};
+
+// 加载价格查询页面
+function loadPriceQueryPage(productName) {
+    loadPage('priceQuery');
+    setTimeout(() => {
+        initPriceQueryPage(productName);
+    }, 100);
+}
+
+// 初始化价格查询页面
+function initPriceQueryPage(productName) {
+    const title = document.getElementById('priceQueryTitle');
+    if (title) {
+        title.textContent = `${productName}历史价格查询`;
+    }
+}
+
+// 更新城市选项
+function updateCityOptions() {
+    const provinceSelect = document.getElementById('provinceSelect');
+    const citySelect = document.getElementById('citySelect');
+    const countySelect = document.getElementById('countySelect');
+    
+    const province = provinceSelect.value;
+    
+    // 清空城市和区县选择
+    citySelect.innerHTML = '<option value="">选择城市</option>';
+    countySelect.innerHTML = '<option value="">选择区县</option>';
+    
+    if (province && regionCascadeData[province]) {
+        const cities = Object.keys(regionCascadeData[province]);
+        cities.forEach(city => {
+            const option = document.createElement('option');
+            option.value = city;
+            option.textContent = city;
+            citySelect.appendChild(option);
+        });
+    }
+}
+
+// 更新区县选项
+function updateCountyOptions() {
+    const provinceSelect = document.getElementById('provinceSelect');
+    const citySelect = document.getElementById('citySelect');
+    const countySelect = document.getElementById('countySelect');
+    
+    const province = provinceSelect.value;
+    const city = citySelect.value;
+    
+    // 清空区县选择
+    countySelect.innerHTML = '<option value="">选择区县</option>';
+    
+    if (province && city && regionCascadeData[province] && regionCascadeData[province][city]) {
+        const counties = regionCascadeData[province][city];
+        counties.forEach(county => {
+            const option = document.createElement('option');
+            option.value = county;
+            option.textContent = county;
+            countySelect.appendChild(option);
+        });
+    }
+}
+
+// 切换查询类型
+function switchQueryType(type) {
+    const tabs = document.querySelectorAll('.query-type-tab');
+    const forms = document.querySelectorAll('.query-form-item');
+    
+    tabs.forEach(tab => {
+        if (tab.getAttribute('data-type') === type) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+    
+    if (type === 'single') {
+        document.getElementById('singleQueryForm').classList.add('active');
+        document.getElementById('trendQueryForm').classList.remove('active');
+    } else {
+        document.getElementById('singleQueryForm').classList.remove('active');
+        document.getElementById('trendQueryForm').classList.add('active');
+    }
+}
+
+// 执行价格查询
+function executePriceQuery() {
+    const provinceSelect = document.getElementById('provinceSelect');
+    const citySelect = document.getElementById('citySelect');
+    const countySelect = document.getElementById('countySelect');
+    
+    const province = provinceSelect.value;
+    const city = citySelect.value;
+    const county = countySelect.value;
+    
+    if (!province || !city || !county) {
+        showNotification('请选择完整的地区信息', 'warning');
+        return;
+    }
+    
+    const activeTab = document.querySelector('.query-type-tab.active');
+    const queryType = activeTab.getAttribute('data-type');
+    
+    if (queryType === 'single') {
+        const yearSelect = document.getElementById('yearSelect');
+        const year = yearSelect.value;
+        
+        if (!year) {
+            showNotification('请选择查询年份', 'warning');
+            return;
+        }
+        
+        executeSingleYearQuery(province, city, county, year);
+    } else {
+        const startYearSelect = document.getElementById('startYearSelect');
+        const endYearSelect = document.getElementById('endYearSelect');
+        const startYear = startYearSelect.value;
+        const endYear = endYearSelect.value;
+        
+        if (!startYear || !endYear) {
+            showNotification('请选择年份范围', 'warning');
+            return;
+        }
+        
+        if (parseInt(startYear) > parseInt(endYear)) {
+            showNotification('起始年份不能大于结束年份', 'warning');
+            return;
+        }
+        
+        executeTrendQuery(province, city, county, startYear, endYear);
+    }
+}
+
+// 执行单年查询
+function executeSingleYearQuery(province, city, county, year) {
+    const resultSection = document.getElementById('queryResultSection');
+    const resultContent = document.getElementById('queryResultContent');
+    
+    // 显示加载状态
+    resultSection.style.display = 'block';
+    resultContent.innerHTML = '<div class="query-loading"><div class="loading-spinner-large"></div><p>正在查询数据...</p></div>';
+    
+    // 滚动到结果区域
+    resultSection.scrollIntoView({ behavior: 'smooth' });
+    
+    setTimeout(() => {
+        const data = getHistoricalPrice(province, city, county, year);
+        
+        if (!data) {
+            resultContent.innerHTML = `
+                <div class="query-empty">
+                    <i class="fas fa-inbox"></i>
+                    <p>未找到 ${year} 年 ${province}${city}${county} 的价格数据</p>
+                    <button class="btn-secondary" onclick="document.getElementById('queryResultSection').style.display='none'">重新查询</button>
+                </div>
+            `;
+            return;
+        }
+        
+        renderSingleYearResult(data, province, city, county, year);
+    }, 800);
+}
+
+// 执行趋势查询
+function executeTrendQuery(province, city, county, startYear, endYear) {
+    const resultSection = document.getElementById('queryResultSection');
+    const resultContent = document.getElementById('queryResultContent');
+    
+    // 显示加载状态
+    resultSection.style.display = 'block';
+    resultContent.innerHTML = '<div class="query-loading"><div class="loading-spinner-large"></div><p>正在分析数据...</p></div>';
+    
+    // 滚动到结果区域
+    resultSection.scrollIntoView({ behavior: 'smooth' });
+    
+    setTimeout(() => {
+        const dataList = getHistoricalPriceRange(province, city, county, parseInt(startYear), parseInt(endYear));
+        
+        if (!dataList || dataList.length === 0) {
+            resultContent.innerHTML = `
+                <div class="query-empty">
+                    <i class="fas fa-inbox"></i>
+                    <p>未找到 ${startYear}-${endYear} 年 ${province}${city}${county} 的价格数据</p>
+                    <button class="btn-secondary" onclick="document.getElementById('queryResultSection').style.display='none'">重新查询</button>
+                </div>
+            `;
+            return;
+        }
+        
+        renderTrendResult(dataList, province, city, county, startYear, endYear);
+    }, 1200);
+}
+
+// 获取历史价格数据
+function getHistoricalPrice(province, city, county, year) {
+    if (!historicalPriceData[province] || !historicalPriceData[province][city] || !historicalPriceData[province][city][county]) {
+        return null;
+    }
+    
+    const countyData = historicalPriceData[province][city][county];
+    return countyData.find(item => item.year === parseInt(year));
+}
+
+// 获取历史价格范围数据
+function getHistoricalPriceRange(province, city, county, startYear, endYear) {
+    if (!historicalPriceData[province] || !historicalPriceData[province][city] || !historicalPriceData[province][city][county]) {
+        return [];
+    }
+    
+    const countyData = historicalPriceData[province][city][county];
+    return countyData.filter(item => item.year >= startYear && item.year <= endYear).sort((a, b) => a.year - b.year);
+}
+
+// 渲染单年查询结果
+function renderSingleYearResult(data, province, city, county, year) {
+    const resultContent = document.getElementById('queryResultContent');
+    
+    resultContent.innerHTML = `
+        <div class="single-year-result">
+            <div class="result-header">
+                <div class="result-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>${province} ${city} ${county}</span>
+                </div>
+                <div class="result-year">${year}年</div>
+            </div>
+            
+            <div class="result-price-card">
+                <div class="price-label">平均价格</div>
+                <div class="price-value">
+                    <span class="price-number">¥${data.avgPrice.toFixed(2)}</span>
+                    <span class="price-unit">/${data.unit}</span>
+                </div>
+                <div class="price-info">
+                    <span class="info-item"><i class="fas fa-seedling"></i> ${data.cate}</span>
+                    <span class="info-item"><i class="fas fa-tag"></i> ${data.breed}</span>
+                    <span class="info-item"><i class="fas fa-calendar"></i> ${data.date}</span>
+                </div>
+            </div>
+            
+            <div class="result-actions">
+                <button class="btn-primary" onclick="compareWithOtherYears('${province}', '${city}', '${county}', ${year})">
+                    <i class="fas fa-chart-line"></i>
+                    查看多年趋势
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// 渲染趋势查询结果
+function renderTrendResult(dataList, province, city, county, startYear, endYear) {
+    const resultContent = document.getElementById('queryResultContent');
+    
+    // 计算价格变化
+    const firstPrice = dataList[0].avgPrice;
+    const lastPrice = dataList[dataList.length - 1].avgPrice;
+    const priceChange = lastPrice - firstPrice;
+    const changePercent = ((priceChange / firstPrice) * 100).toFixed(2);
+    const changeClass = priceChange >= 0 ? 'positive' : 'negative';
+    const changeIcon = priceChange >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+    
+    // 计算平均价格
+    const avgPrice = (dataList.reduce((sum, item) => sum + item.avgPrice, 0) / dataList.length).toFixed(2);
+    
+    // 计算最高价和最低价
+    const maxPrice = Math.max(...dataList.map(item => item.avgPrice)).toFixed(2);
+    const minPrice = Math.min(...dataList.map(item => item.avgPrice)).toFixed(2);
+    
+    resultContent.innerHTML = `
+        <div class="trend-result">
+            <div class="result-header">
+                <div class="result-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>${province} ${city} ${county}</span>
+                </div>
+                <div class="result-period">${startYear}-${endYear}年</div>
+            </div>
+            
+            <div class="trend-summary">
+                <div class="summary-card">
+                    <div class="summary-label">期间平均价</div>
+                    <div class="summary-value">¥${avgPrice}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">最高价</div>
+                    <div class="summary-value">¥${maxPrice}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="summary-label">最低价</div>
+                    <div class="summary-value">¥${minPrice}</div>
+                </div>
+                <div class="summary-card ${changeClass}">
+                    <div class="summary-label">总体变化</div>
+                    <div class="summary-value">
+                        <i class="fas ${changeIcon}"></i>
+                        ${changePercent}%
+                    </div>
+                </div>
+            </div>
+            
+            <div class="trend-chart-container">
+                <h4><i class="fas fa-chart-line"></i> 价格走势</h4>
+                <canvas id="trendChart" width="360" height="220"></canvas>
+            </div>
+            
+            <div class="trend-data-list">
+                <h4><i class="fas fa-list"></i> 详细数据</h4>
+                <div class="data-table">
+                    ${dataList.map((item, index) => {
+                        const prevPrice = index > 0 ? dataList[index - 1].avgPrice : item.avgPrice;
+                        const yearChange = item.avgPrice - prevPrice;
+                        const yearChangePercent = index > 0 ? ((yearChange / prevPrice) * 100).toFixed(2) : '0.00';
+                        const yearChangeClass = yearChange >= 0 ? 'positive' : 'negative';
+                        const yearChangeIcon = yearChange >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
+                        
+                        return `
+                            <div class="data-row">
+                                <div class="row-year">${item.year}年</div>
+                                <div class="row-price">¥${item.avgPrice.toFixed(2)}</div>
+                                <div class="row-change ${yearChangeClass}">
+                                    ${index > 0 ? `<i class="fas ${yearChangeIcon}"></i> ${yearChangePercent}%` : '-'}
+                                </div>
+                            </div>
+                        `;
+                    }).join('')}
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 绘制趋势图表
+    setTimeout(() => {
+        drawTrendChart(dataList);
+    }, 100);
+}
+
+// 绘制趋势图表
+function drawTrendChart(dataList) {
+    const canvas = document.getElementById('trendChart');
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    
+    // 清空画布
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // 计算数据范围
+    const prices = dataList.map(d => d.avgPrice);
+    const minPrice = Math.min(...prices);
+    const maxPrice = Math.max(...prices);
+    const range = maxPrice - minPrice;
+    const paddingValue = range * 0.1; // 10% padding
+    
+    // 绘制参数
+    const padding = { top: 30, right: 30, bottom: 40, left: 50 };
+    const chartWidth = canvas.width - padding.left - padding.right;
+    const chartHeight = canvas.height - padding.top - padding.bottom;
+    const stepX = chartWidth / (dataList.length - 1);
+    
+    // 绘制标题
+    ctx.fillStyle = '#333';
+    ctx.font = 'bold 14px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('价格走势图', canvas.width / 2, 20);
+    
+    // 绘制网格线和Y轴标签
+    ctx.strokeStyle = '#E8E8E8';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = '#666';
+    ctx.font = '11px Arial';
+    ctx.textAlign = 'right';
+    
+    for (let i = 0; i <= 5; i++) {
+        const y = padding.top + (chartHeight / 5) * i;
+        const value = (maxPrice + paddingValue - ((range + paddingValue * 2) / 5) * i).toFixed(2);
+        
+        // 网格线
+        ctx.beginPath();
+        ctx.moveTo(padding.left, y);
+        ctx.lineTo(padding.left + chartWidth, y);
+        ctx.stroke();
+        
+        // Y轴标签
+        ctx.fillText('¥' + value, padding.left - 5, y + 4);
+    }
+    
+    // 绘制价格曲线
+    ctx.beginPath();
+    ctx.strokeStyle = '#667eea';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([]);
+    
+    dataList.forEach((point, index) => {
+        const x = padding.left + index * stepX;
+        const y = padding.top + chartHeight - ((point.avgPrice - (minPrice - paddingValue)) / (range + paddingValue * 2)) * chartHeight;
+        
+        if (index === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
+    });
+    ctx.stroke();
+    
+    // 绘制数据点
+    dataList.forEach((point, index) => {
+        const x = padding.left + index * stepX;
+        const y = padding.top + chartHeight - ((point.avgPrice - (minPrice - paddingValue)) / (range + paddingValue * 2)) * chartHeight;
+        
+        // 数据点
+        ctx.beginPath();
+        ctx.arc(x, y, 5, 0, Math.PI * 2);
+        ctx.fillStyle = '#667eea';
+        ctx.fill();
+        ctx.strokeStyle = '#fff';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+        
+        // 数据标签（在点上方显示）
+        ctx.fillStyle = '#666';
+        ctx.font = '10px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('¥' + point.avgPrice.toFixed(2), x, y - 10);
+    });
+    
+    // 绘制X轴标签
+    ctx.fillStyle = '#666';
+    ctx.font = '11px Arial';
+    ctx.textAlign = 'center';
+    dataList.forEach((point, index) => {
+        const x = padding.left + index * stepX;
+        const y = padding.top + chartHeight + 20;
+        ctx.fillText(point.year + '年', x, y);
+    });
+}
+
+// 对比其他年份
+function compareWithOtherYears(province, city, county, currentYear) {
+    // 获取前后各2年的数据
+    const startYear = parseInt(currentYear) - 2;
+    const endYear = parseInt(currentYear) + 2;
+    
+    // 切换到趋势查询模式
+    switchQueryType('trend');
+    
+    // 设置年份范围
+    document.getElementById('startYearSelect').value = startYear.toString();
+    document.getElementById('endYearSelect').value = endYear.toString();
+    
+    // 执行查询
+    executeTrendQuery(province, city, county, startYear.toString(), endYear.toString());
 }

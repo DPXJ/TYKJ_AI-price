@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>价格报告测试</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>价格报告功能测试</h1>
+        
+        <h2>测试步骤：</h2>
+        <ol>
+            <li>点击下面的按钮测试数据结构</li>
+            <li>查看结果，确认数据是否正确加载</li>
+            <li>如果有错误，会显示错误信息</li>
+        </ol>
+        
+        <button onclick="testData()">测试数据结构</button>
+        <button onclick="testAIAdvice()">测试AI建议数据</button>
+        <button onclick="window.open('index.html', '_blank')">打开主页面</button>
+        
+        <div id="result"></div>
+    </div>
+    
+    <script>
+        // 复制主要的数据结构进行测试
+        const testPriceData = {
+            '小麦': {
+                name: '小麦',
+                region: '河南',
+                currentPrice: 2.65,
+                priceUnit: '元/斤',
+                change: 0.08,
+                changePercent: 3.1,
+                insight: '受雨雪影响，河南局部看涨',
+                shortTermForecast: '预计未来3-5天价格将继续保持上涨态势，受降雪天气影响，运输成本上升，建议密切关注天气变化及市场动态。',
+                historyData: [
+                    { date: '01-04', price: 2.50 },
+                    { date: '01-05', price: 2.52 },
+                    { date: '01-06', price: 2.55 },
+                    { date: '01-07', price: 2.58 },
+                    { date: '01-08', price: 2.60 },
+                    { date: '01-09', price: 2.62 },
+                    { date: '01-10', price: 2.65 }
+                ],
+                regionData: [
+                    { region: '河南', price: 2.65, trend: 'up' },
+                    { region: '山东', price: 2.62, trend: 'stable' },
+                    { region: '河北', price: 2.60, trend: 'up' }
+                ],
+                aiAdvice: {
+                    trend: 'up',
+                    summary: '短期内价格将保持上涨趋势',
+                    details: [
+                        '天气因素：降雪天气影响运输，推高物流成本，支撑价格上涨',
+                        '市场需求：春节前备货需求旺盛，面粉企业采购积极',
+                        '供应情况：农户惜售情绪较浓，市场流通粮源偏紧',
+                        '政策面：收储政策平稳，市场运行正常',
+                        '建议：当前价格处于合理区间，可根据自身情况选择出售时机，建议分批次出售降低风险'
+                    ],
+                    risks: ['天气转好后运输成本下降', '市场供应量增加', '节后需求回落'],
+                    opportunities: ['春节前备货需求持续', '天气因素持续影响', '农户惜售支撑价格']
+                }
+            }
+        };
+        
+        function testData() {
+            const resultDiv = document.getElementById('result');
+            const data = testPriceData['小麦'];
+            
+            let html = '<h3>数据检查结果：</h3>';
+            
+            // 检查基础数据
+            html += '<div class="success">✓ 基础数据存在</div>';
+            html += `<p>名称：${data.name}</p>`;
+            html += `<p>地区：${data.region}</p>`;
+            html += `<p>当前价格：¥${data.currentPrice}/斤</p>`;
+            html += `<p>涨跌：${data.change >= 0 ? '+' : ''}${data.change} (${data.changePercent}%)</p>`;
+            
+            // 检查短期预测
+            if (data.shortTermForecast) {
+                html += '<div class="success">✓ 短期预测数据存在</div>';
+                html += `<p>短期预测：${data.shortTermForecast}</p>`;
+            } else {
+                html += '<div class="error">✗ 短期预测数据缺失</div>';
+            }
+            
+            // 检查AI建议
+            if (data.aiAdvice) {
+                html += '<div class="success">✓ AI建议数据存在</div>';
+            } else {
+                html += '<div class="error">✗ AI建议数据缺失</div>';
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+        
+        function testAIAdvice() {
+            const resultDiv = document.getElementById('result');
+            const data = testPriceData['小麦'];
+            
+            let html = '<h3>AI建议详细检查：</h3>';
+            
+            if (!data.aiAdvice) {
+                html += '<div class="error">✗ AI建议对象不存在</div>';
+                resultDiv.innerHTML = html;
+                return;
+            }
+            
+            const advice = data.aiAdvice;
+            
+            // 检查趋势
+            html += '<h4>趋势信息：</h4>';
+            html += `<p>趋势方向：${advice.trend || '未设置'}</p>`;
+            html += `<p>趋势摘要：${advice.summary || '未设置'}</p>`;
+            
+            // 检查详细信息
+            html += '<h4>详细建议：</h4>';
+            if (advice.details && advice.details.length > 0) {
+                html += '<ul>';
+                advice.details.forEach(detail => {
+                    html += `<li>${detail}</li>`;
+                });
+                html += '</ul>';
+            } else {
+                html += '<div class="error">✗ 详细建议为空</div>';
+            }
+            
+            // 检查风险
+            html += '<h4>风险因素：</h4>';
+            if (advice.risks && advice.risks.length > 0) {
+                html += '<ul>';
+                advice.risks.forEach(risk => {
+                    html += `<li>${risk}</li>`;
+                });
+                html += '</ul>';
+            } else {
+                html += '<div class="error">✗ 风险因素为空</div>';
+            }
+            
+            // 检查机会
+            html += '<h4>利好因素：</h4>';
+            if (advice.opportunities && advice.opportunities.length > 0) {
+                html += '<ul>';
+                advice.opportunities.forEach(opp => {
+                    html += `<li>${opp}</li>`;
+                });
+                html += '</ul>';
+            } else {
+                html += '<div class="error">✗ 利好因素为空</div>';
+            }
+            
+            resultDiv.innerHTML = html;
+        }
+    </script>
+</body>
+</html>

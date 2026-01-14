@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>详情页调试</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <style>
+        .debug-info {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            background: #333;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            max-width: 300px;
+            z-index: 9999;
+        }
+        .debug-info h4 {
+            margin: 0 0 10px 0;
+            color: #4CAF50;
+        }
+        .debug-info p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="prototype-container">
+        <div class="phone-container">
+            <div class="phone-frame">
+                <div class="phone-screen">
+                    <div class="phone-content" id="phoneContent">
+                        <!-- 手动加载详情页 -->
+                        <div class="mobile-page price-report-page">
+                            <div class="mobile-header">
+                                <button class="back-btn">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <div class="header-title">
+                                    <h1 id="priceReportTitle">小麦价格AI分析报告</h1>
+                                </div>
+                            </div>
+                            <div class="price-report-content" id="priceReportContent">
+                                <div style="text-align:center;padding:50px;color:#999;">
+                                    点击下方按钮加载详情...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="debug-info">
+        <h4>调试信息</h4>
+        <button onclick="loadDebugReport()" style="width:100%;padding:8px;margin-bottom:10px;background:#4CAF50;color:white;border:none;border-radius:4px;cursor:pointer;">
+            加载详情页
+        </button>
+        <p id="debugStatus">等待加载...</p>
+    </div>
+    
+    <script src="scripts/main.js"></script>
+    <script>
+        function loadDebugReport() {
+            const statusEl = document.getElementById('debugStatus');
+            statusEl.innerHTML = '开始加载...';
+            
+            try {
+                const container = document.getElementById('priceReportContent');
+                if (!container) {
+                    statusEl.innerHTML = '<span style="color:red;">✗ 容器未找到</span>';
+                    return;
+                }
+                
+                statusEl.innerHTML = '容器已找到<br>';
+                
+                // 检查函数是否存在
+                if (typeof generatePriceAnalysisReport !== 'function') {
+                    statusEl.innerHTML += '<span style="color:red;">✗ 函数不存在</span>';
+                    return;
+                }
+                
+                statusEl.innerHTML += '函数已找到<br>';
+                
+                // 检查数据
+                if (typeof priceAgentData === 'undefined') {
+                    statusEl.innerHTML += '<span style="color:red;">✗ 数据不存在</span>';
+                    return;
+                }
+                
+                statusEl.innerHTML += '数据已找到<br>';
+                
+                // 调用函数
+                generatePriceAnalysisReport(container, '小麦', '河南');
+                
+                statusEl.innerHTML += '<span style="color:#4CAF50;">✓ 加载完成！</span>';
+            } catch (error) {
+                statusEl.innerHTML = '<span style="color:red;">错误: ' + error.message + '</span>';
+                console.error('详细错误:', error);
+            }
+        }
+        
+        // 页面加载完成后自动执行
+        window.addEventListener('load', function() {
+            console.log('页面加载完成，2秒后自动加载详情...');
+            setTimeout(loadDebugReport, 2000);
+        });
+    </script>
+</body>
+</html>

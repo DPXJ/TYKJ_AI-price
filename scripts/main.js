@@ -158,47 +158,62 @@ const pageData = {
                     </div>
 
                     <!-- 农产品价格趋势卡片 -->
-                    <div class="card price-trend-card" onclick="enterPriceReport('小麦')">
-                        <div class="price-card-header">
-                            <div class="price-card-title">
-                                <i class="fas fa-chart-line"></i>
-                                <span>小麦价格行情</span>
-                            </div>
-                            <div class="price-card-subtitle">AI智能分析 · 点击查看详细报告</div>
+                    <div class="card price-trend-card" id="homePriceCard">
+                        <!-- 地区切换公告提示 -->
+                        <div class="price-region-notice" id="priceRegionNotice" style="display: none;">
+                            <i class="fas fa-check-circle"></i>
+                            <span id="priceRegionNoticeText"></span>
+                            <button class="notice-view-btn" id="priceRegionNoticeBtn" onclick="viewNewRegionReport()">点击查看</button>
                         </div>
                         
-                        <div class="price-card-content">
-                            <div class="price-main-info">
-                                <div class="price-product">
-                                    <div class="product-name">小麦</div>
-                                    <div class="product-region">河南地区</div>
+                        <div onclick="enterPriceReport('小麦')">
+                            <div class="price-card-header">
+                                <div class="price-card-title">
+                                    <i class="fas fa-chart-line"></i>
+                                    <span>小麦价格行情</span>
                                 </div>
-                                <div class="price-value">
-                                    <div class="price-current">¥2.65<span class="price-unit">/斤</span></div>
-                                    <div class="price-change positive">
-                                        <i class="fas fa-arrow-up"></i>
-                                        <span>+0.08 (+3.1%)</span>
+                                <div class="price-card-subtitle">AI智能分析 · 点击查看详细报告</div>
+                            </div>
+                            
+                            <div class="price-card-content">
+                                <div class="price-main-info">
+                                    <div class="price-product">
+                                        <div class="product-name">小麦</div>
+                                        <div class="product-region" id="homeProductRegion">河南地区</div>
+                                    </div>
+                                    <div class="price-value">
+                                        <div class="price-current">¥2.65<span class="price-unit">/斤</span></div>
+                                        <div class="price-change positive">
+                                            <i class="fas fa-arrow-up"></i>
+                                            <span>+0.08 (+3.1%)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- 微型趋势图 -->
+                                <div class="price-sparkline">
+                                    <canvas id="priceSparklineCanvas" width="300" height="60"></canvas>
+                                </div>
+                                
+                                <!-- 一句话解盘 -->
+                                <div class="price-insight">
+                                    <i class="fas fa-lightbulb"></i>
+                                    <span id="homePriceInsight">受雨雪影响，河南局部看涨</span>
+                                </div>
+                                
+                                <div class="price-card-action">
+                                    <div class="action-hint">
+                                        <span>点击查看详细分析和预测</span>
+                                        <i class="fas fa-chevron-right"></i>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <!-- 微型趋势图 -->
-                            <div class="price-sparkline">
-                                <canvas id="priceSparklineCanvas" width="300" height="60"></canvas>
-                            </div>
-                            
-                            <!-- 一句话解盘 -->
-                            <div class="price-insight">
-                                <i class="fas fa-lightbulb"></i>
-                                <span>受雨雪影响，河南局部看涨</span>
-                            </div>
-                            
-                            <div class="price-card-action">
-                                <div class="action-hint">
-                                    <span>点击查看详细分析和预测</span>
-                                    <i class="fas fa-chevron-right"></i>
-                                </div>
-                            </div>
+                        </div>
+                        
+                        <!-- 切换地区按钮 -->
+                        <div class="price-card-region-switch" onclick="event.stopPropagation(); showHomeRegionSelector('小麦')">
+                            <i class="fas fa-map-marked-alt"></i>
+                            <span>切换地区</span>
                         </div>
                     </div>
 
@@ -1067,10 +1082,6 @@ const pageData = {
                     <div class="recommended-agents price-quick-access">
                         <div class="agents-hint">快速访问</div>
                         <div class="agents-grid">
-                            <div class="agent-card" onclick="loadPriceQueryPage('小麦')">
-                                <i class="fas fa-search-dollar"></i>
-                                <span>历史价格查询</span>
-                            </div>
                             <div class="agent-card" onclick="loadWeatherDisasterHome()">
                                 <i class="fas fa-cloud-sun-rain"></i>
                                 <span>气象灾害预警</span>
@@ -11751,34 +11762,37 @@ function sendPriceAgentMessage() {
 // ==================== 价格AI分析报告相关函数 ====================
 
 // 从首页进入价格报告
-function enterPriceReport(productName) {
+function enterPriceReport(productName, region) {
     loadPage('homePriceReport');
     setTimeout(() => {
-        initHomePriceReport(productName);
+        initHomePriceReport(productName, region);
     }, 100);
 }
 
 // 初始化首页价格报告（显示生成中）
-function initHomePriceReport(productName) {
+function initHomePriceReport(productName, region) {
     const title = document.getElementById('homePriceReportTitle');
     if (title) {
         title.textContent = `${productName}价格报告`;
     }
-    
+
     const container = document.getElementById('homePriceReportContent');
     if (!container) return;
+
+    // 如果指定了地区，使用该地区，否则使用默认地区
+    const reportRegion = region || (priceAgentData[productName] ? priceAgentData[productName].region : '河南');
     
     // 显示生成中状态
-    showHomePriceReportLoading(container, productName);
+    showHomePriceReportLoading(container, productName, reportRegion);
     
     // 模拟1-2分钟生成，这里用3秒演示
     setTimeout(() => {
-        generateHomePriceReportPreview(container, productName);
+        generateHomePriceReportPreview(container, productName, reportRegion);
     }, 3000);
 }
 
 // 显示首页报告生成中状态
-function showHomePriceReportLoading(container, productName) {
+function showHomePriceReportLoading(container, productName, region) {
     container.innerHTML = `
         <div class="home-report-loading-state">
             <div class="loading-animation-large">
@@ -11800,9 +11814,12 @@ function showHomePriceReportLoading(container, productName) {
 }
 
 // 生成首页报告预览卡片
-function generateHomePriceReportPreview(container, productName) {
+function generateHomePriceReportPreview(container, productName, region) {
     const data = priceAgentData[productName];
     if (!data) return;
+    
+    // 使用传入的地区，如果没有则使用数据中的默认地区
+    const displayRegion = region || data.region;
     
     const changeClass = data.change >= 0 ? 'positive' : 'negative';
     const changeIcon = data.change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
@@ -11812,7 +11829,7 @@ function generateHomePriceReportPreview(container, productName) {
     
     container.innerHTML = `
         <!-- 预览卡片 -->
-        <div class="home-report-preview-card" onclick="viewPriceReportDetail('${productName}', '${data.region}')">
+        <div class="home-report-preview-card" onclick="viewPriceReportDetail('${productName}', '${displayRegion}')">
             <div class="preview-card-badge">
                 <i class="fas fa-file-alt"></i>
                 <span>AI分析报告</span>
@@ -11829,7 +11846,7 @@ function generateHomePriceReportPreview(container, productName) {
                 <div class="preview-info-row">
                     <div class="preview-info-item">
                         <span class="info-label">所在城市</span>
-                        <span class="info-value">${data.region}</span>
+                        <span class="info-value">${displayRegion}</span>
                     </div>
                     <div class="preview-info-item">
                         <span class="info-label">种植作物</span>
@@ -11917,6 +11934,233 @@ function generateHomePriceReportPreview(container, productName) {
             </div>
         </div>
     `;
+}
+
+// 存储首页切换的地区信息
+let homePriceRegionData = {
+    productName: '小麦',
+    region: '河南',
+    isGenerating: false
+};
+
+// 首页切换地区选择器
+function showHomeRegionSelector(productName) {
+    const regions = wheatMainRegions;
+    
+    // 创建弹窗HTML
+    const modalHTML = `
+        <div class="region-selector-modal" id="homeRegionSelectorModal" onclick="closeHomeRegionSelector(event)">
+            <div class="region-selector-content" onclick="event.stopPropagation()">
+                <div class="region-selector-header">
+                    <h3>选择地区</h3>
+                    <button class="close-btn" onclick="closeHomeRegionSelector()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="region-selector-body">
+                    <div class="region-tabs">
+                        ${Object.keys(regions).map((province, index) => `
+                            <button class="region-tab ${index === 0 ? 'active' : ''}" 
+                                    onclick="switchHomeRegionTab('${province}', '${productName}')" 
+                                    data-province="${province}">
+                                ${regions[province].name}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="region-counties" id="homeRegionCounties">
+                        ${generateHomeCountiesList('全国', productName)}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 添加到手机内容容器
+    const phoneContent = document.getElementById('phoneContent');
+    if (!phoneContent) return;
+    
+    const existingModal = document.getElementById('homeRegionSelectorModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    phoneContent.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // 添加动画
+    setTimeout(() => {
+        const modal = document.getElementById('homeRegionSelectorModal');
+        if (modal) {
+            modal.classList.add('show');
+        }
+    }, 10);
+}
+
+// 生成首页县区列表
+function generateHomeCountiesList(province, productName) {
+    const regions = wheatMainRegions;
+    const counties = regions[province].counties;
+    
+    if (province === '全国') {
+        return `
+            <div class="county-item national" onclick="selectHomeRegion('${productName}', '全国', '')">
+                <div class="county-icon">
+                    <i class="fas fa-globe"></i>
+                </div>
+                <div class="county-content">
+                    <div class="county-name">全国概况</div>
+                    <div class="county-desc">查看全国${productName}价格综合分析</div>
+                </div>
+                <i class="fas fa-chevron-right"></i>
+            </div>
+        `;
+    }
+    
+    return counties.map(county => `
+        <div class="county-item" onclick="selectHomeRegion('${productName}', '${province}', '${county}')">
+            <div class="county-icon">
+                <i class="fas fa-map-marker-alt"></i>
+            </div>
+            <div class="county-content">
+                <div class="county-name">${county}</div>
+                <div class="county-desc">${province}省${county}地区</div>
+            </div>
+            <i class="fas fa-chevron-right"></i>
+        </div>
+    `).join('');
+}
+
+// 切换首页地区选项卡
+function switchHomeRegionTab(province, productName) {
+    // 更新选项卡状态
+    document.querySelectorAll('#homeRegionSelectorModal .region-tab').forEach(tab => {
+        tab.classList.remove('active');
+        if (tab.dataset.province === province) {
+            tab.classList.add('active');
+        }
+    });
+    
+    // 更新县区列表
+    const countiesContainer = document.getElementById('homeRegionCounties');
+    if (countiesContainer) {
+        countiesContainer.innerHTML = generateHomeCountiesList(province, productName);
+    }
+}
+
+// 选择首页地区
+function selectHomeRegion(productName, province, county) {
+    closeHomeRegionSelector();
+    
+    const region = county ? `${province}-${county}` : province;
+    
+    // 保存选择的地区信息
+    homePriceRegionData = {
+        productName: productName,
+        region: region,
+        province: province,
+        county: county,
+        isGenerating: true
+    };
+    
+    // 显示生成提示弹窗
+    showHomeRegionGeneratingModal(productName, region);
+    
+    // 模拟生成过程（1-2分钟）
+    setTimeout(() => {
+        // 生成完成，显示绿色公告
+        showHomeRegionNotice(productName, region);
+        homePriceRegionData.isGenerating = false;
+    }, 120000); // 2分钟
+}
+
+// 显示生成提示弹窗
+function showHomeRegionGeneratingModal(productName, region) {
+    const phoneContent = document.getElementById('phoneContent');
+    if (!phoneContent) return;
+    
+    const modalHTML = `
+        <div class="region-generating-modal" id="regionGeneratingModal">
+            <div class="generating-content">
+                <div class="generating-icon">
+                    <i class="fas fa-spinner fa-spin"></i>
+                </div>
+                <div class="generating-text">
+                    <h3>正在生成${productName}价格报告</h3>
+                    <p>您选择的${region}地区${productName}价格AI分析报告正在生成中，预计1-2分钟完成，请稍候...</p>
+                </div>
+                <button class="generating-close-btn" onclick="closeGeneratingModal()">知道了</button>
+            </div>
+        </div>
+    `;
+    
+    const existingModal = document.getElementById('regionGeneratingModal');
+    if (existingModal) {
+        existingModal.remove();
+    }
+    
+    phoneContent.insertAdjacentHTML('beforeend', modalHTML);
+    
+    setTimeout(() => {
+        const modal = document.getElementById('regionGeneratingModal');
+        if (modal) {
+            modal.classList.add('show');
+        }
+    }, 10);
+}
+
+// 关闭生成提示弹窗
+function closeGeneratingModal() {
+    const modal = document.getElementById('regionGeneratingModal');
+    if (modal) {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
+
+// 关闭首页地区选择器
+function closeHomeRegionSelector(event) {
+    if (event && event.target.id === 'homeRegionSelectorModal') {
+        const modal = document.getElementById('homeRegionSelectorModal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.remove();
+            }, 300);
+        }
+    } else if (!event) {
+        const modal = document.getElementById('homeRegionSelectorModal');
+        if (modal) {
+            modal.classList.remove('show');
+            setTimeout(() => {
+                modal.remove();
+            }, 300);
+        }
+    }
+}
+
+// 显示首页地区切换公告
+function showHomeRegionNotice(productName, region) {
+    const notice = document.getElementById('priceRegionNotice');
+    const noticeText = document.getElementById('priceRegionNoticeText');
+    
+    if (notice && noticeText) {
+        noticeText.textContent = `您选择的${region}地区${productName}价格AI分析报告已生成`;
+        notice.style.display = 'flex';
+    }
+    
+    // 更新首页卡片显示的地区
+    const regionElement = document.getElementById('homeProductRegion');
+    if (regionElement) {
+        regionElement.textContent = `${region}地区`;
+    }
+}
+
+// 查看新地区报告
+function viewNewRegionReport() {
+    if (homePriceRegionData && homePriceRegionData.region) {
+        enterPriceReport(homePriceRegionData.productName, homePriceRegionData.region);
+    }
 }
 
 // 显示地区选择器弹窗
@@ -12163,7 +12407,6 @@ function generatePriceAnalysisReport(container, productName, region) {
                     </div>
                     <div class="chart-legend">
                         <span class="legend-item"><span class="legend-dot history"></span>历史价格</span>
-                        <span class="legend-item"><span class="legend-dot forecast"></span>趋势预测</span>
                     </div>
                     <div class="chart-summary">
                         <div class="summary-item">
@@ -12294,7 +12537,8 @@ function drawPriceReportChart(data) {
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
-    const allData = [...data.historyData, ...data.forecastData];
+    // 只使用历史数据，不使用预测数据
+    const allData = data.historyData;
     
     // 清空画布
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -12347,34 +12591,15 @@ function drawPriceReportChart(data) {
     });
     ctx.stroke();
     
-    // 绘制预测数据线（虚线）
-    ctx.beginPath();
-    ctx.strokeStyle = '#FF9800';
-    ctx.lineWidth = 2.5;
-    ctx.setLineDash([5, 5]);
-    
-    // 从历史数据最后一个点开始
-    const lastHistoryIndex = data.historyData.length - 1;
-    const lastHistoryX = padding.left + lastHistoryIndex * stepX;
-    const lastHistoryY = padding.top + chartHeight - ((data.historyData[lastHistoryIndex].price - minPrice) / range) * chartHeight;
-    ctx.moveTo(lastHistoryX, lastHistoryY);
-    
-    data.forecastData.forEach((point, index) => {
-        const x = padding.left + (lastHistoryIndex + 1 + index) * stepX;
-        const y = padding.top + chartHeight - ((point.price - minPrice) / range) * chartHeight;
-        ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-    
-    // 绘制数据点
+    // 只绘制历史数据点，不绘制预测数据
     ctx.setLineDash([]);
-    allData.forEach((point, index) => {
+    data.historyData.forEach((point, index) => {
         const x = padding.left + index * stepX;
         const y = padding.top + chartHeight - ((point.price - minPrice) / range) * chartHeight;
         
         ctx.beginPath();
         ctx.arc(x, y, 3, 0, Math.PI * 2);
-        ctx.fillStyle = index < data.historyData.length ? '#4CAF50' : '#FF9800';
+        ctx.fillStyle = '#4CAF50';
         ctx.fill();
         ctx.strokeStyle = '#fff';
         ctx.lineWidth = 2;

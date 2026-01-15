@@ -12515,6 +12515,35 @@ body {
     color: #FF9800;
 }
 
+/* 首页卡片头部布局 */
+.price-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+/* 历史报告按钮 */
+.price-history-btn {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: #999;
+    font-size: 18px;
+    transition: all 0.2s;
+    border-radius: 8px;
+}
+
+.price-history-btn:hover {
+    color: #667eea;
+    background: rgba(102, 126, 234, 0.1);
+}
+
+.price-history-btn:active {
+    transform: scale(0.95);
+}
+
 .price-card-subtitle {
     font-size: 12px;
     color: #999;
@@ -15555,5 +15584,378 @@ body {
     font-size: 13px;
     color: #795548;
     line-height: 1.5;
+}
+
+/* ==================== 二级预览页面核心字段样式 ==================== */
+
+/* 核心4字段展示区 */
+.preview-core-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+    padding: 16px;
+    background: linear-gradient(135deg, #f8f9ff 0%, #f0f2ff 100%);
+    border-radius: 12px;
+}
+
+.core-metric-item {
+    background: white;
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.2s;
+}
+
+.core-metric-item.highlight {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    grid-column: 1 / -1;
+    padding: 18px;
+}
+
+.core-metric-item.highlight .metric-label {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.core-metric-item.highlight .metric-value {
+    font-size: 32px;
+    color: white;
+}
+
+.core-metric-item.highlight .metric-unit {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 14px;
+}
+
+.metric-label {
+    display: block;
+    font-size: 12px;
+    color: #999;
+    margin-bottom: 6px;
+}
+
+.metric-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+}
+
+.metric-unit {
+    font-size: 12px;
+    color: #999;
+    font-weight: 400;
+}
+
+.core-metric-item.positive .metric-value {
+    color: #f44336;
+}
+
+.core-metric-item.negative .metric-value {
+    color: #4caf50;
+}
+
+.metric-icon {
+    font-size: 12px;
+    margin-left: 4px;
+}
+
+.core-metric-item.positive .metric-icon {
+    color: #f44336;
+}
+
+.core-metric-item.negative .metric-icon {
+    color: #4caf50;
+}
+
+/* 紧凑型信息行 */
+.preview-info-row.compact {
+    display: flex;
+    gap: 12px;
+    padding: 8px 0;
+    border-bottom: 1px dashed #eee;
+    margin-bottom: 12px;
+}
+
+.preview-info-row.compact .preview-info-item {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.preview-info-row.compact .info-label {
+    font-size: 12px;
+    color: #999;
+}
+
+.preview-info-row.compact .info-value {
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* ==================== 报告详情页月度价格样式 ==================== */
+
+/* 月度价格区块 */
+.monthly-section {
+    background: linear-gradient(135deg, #f0f7ff 0%, #e8f4fd 100%);
+    border: 1px solid #d6e8f5;
+}
+
+.monthly-section h4 {
+    color: #1976d2;
+}
+
+.monthly-section h4 i {
+    color: #1976d2;
+}
+
+.monthly-summary {
+    background: white;
+    border-radius: 10px;
+    padding: 16px;
+}
+
+/* 数据更新日期样式 */
+.preview-date {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+}
+
+.preview-date .date-label {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.preview-date .date-value {
+    color: white;
+    font-weight: 500;
+}
+
+/* 报告底部操作区 */
+.report-footer-actions {
+    padding: 20px;
+    background: white;
+    border-top: 1px solid #eee;
+    margin-top: 20px;
+}
+
+.refresh-report-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.refresh-report-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+.refresh-report-btn:active {
+    transform: translateY(0);
+}
+
+.refresh-report-btn i {
+    font-size: 16px;
+}
+
+/* ==================== 历史报告列表页面样式 ==================== */
+
+.price-history-page {
+    background: #f5f7fa;
+}
+
+.price-history-content {
+    padding: 16px;
+}
+
+/* 历史统计头部 */
+.history-list-header {
+    margin-bottom: 20px;
+}
+
+.history-stats {
+    display: flex;
+    justify-content: space-around;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.history-stats .stat-item {
+    text-align: center;
+}
+
+.history-stats .stat-value {
+    display: block;
+    font-size: 24px;
+    font-weight: 700;
+    color: #667eea;
+    margin-bottom: 4px;
+}
+
+.history-stats .stat-label {
+    font-size: 12px;
+    color: #999;
+}
+
+/* 历史报告列表 */
+.history-report-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-report-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.history-report-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.history-report-item:active {
+    transform: translateY(0);
+}
+
+/* 日期区域 */
+.report-date-section {
+    min-width: 50px;
+    text-align: center;
+}
+
+.report-date {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.report-weekday {
+    font-size: 11px;
+    color: #999;
+}
+
+/* 报告信息区域 */
+.report-info-section {
+    flex: 1;
+}
+
+.report-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.report-region {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #999;
+}
+
+.report-region i {
+    font-size: 10px;
+    color: #667eea;
+}
+
+/* 价格区域 */
+.report-price-section {
+    text-align: right;
+}
+
+.report-avg-price {
+    font-size: 18px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 2px;
+}
+
+.report-change {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 4px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.report-change.positive {
+    color: #f44336;
+}
+
+.report-change.negative {
+    color: #4caf50;
+}
+
+.report-change i {
+    font-size: 10px;
+}
+
+/* 箭头 */
+.report-arrow {
+    color: #ccc;
+    font-size: 14px;
+}
+
+/* 底部提示 */
+.history-tips {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    margin-top: 20px;
+    padding: 12px 16px;
+    background: #f0f5ff;
+    border-radius: 8px;
+}
+
+.history-tips i {
+    color: #667eea;
+    font-size: 14px;
+    margin-top: 2px;
+}
+
+.history-tips span {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+}
+
+/* 静态引导文案样式 */
+.price-insight.guide-text {
+    background: linear-gradient(135deg, #fff3e0 0%, #fff8e1 100%);
+    border-radius: 8px;
+    padding: 10px 12px;
+}
+
+.price-insight.guide-text span {
+    color: #e65100;
+    font-weight: 500;
 }
  

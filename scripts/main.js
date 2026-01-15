@@ -172,7 +172,10 @@ const pageData = {
                                     <i class="fas fa-chart-line"></i>
                                     <span>小麦价格行情</span>
                                 </div>
-                                <div class="price-card-subtitle">AI智能分析 · 点击查看详细报告</div>
+                                <!-- 历史报告图标 -->
+                                <button class="price-history-btn" onclick="event.stopPropagation(); loadPriceHistoryPage('小麦')">
+                                    <i class="fas fa-history"></i>
+                                </button>
                             </div>
                             
                             <div class="price-card-content">
@@ -195,10 +198,10 @@ const pageData = {
                                     <canvas id="priceSparklineCanvas" width="300" height="60"></canvas>
                                 </div>
                                 
-                                <!-- 一句话解盘 -->
-                                <div class="price-insight">
+                                <!-- 静态引导文案 -->
+                                <div class="price-insight guide-text">
                                     <i class="fas fa-lightbulb"></i>
-                                    <span id="homePriceInsight">受雨雪影响，河南局部看涨</span>
+                                    <span>小麦价格近7天是涨是跌？快来点击查看吧！</span>
                                 </div>
                                 
                                 <div class="price-card-action">
@@ -1249,7 +1252,7 @@ const pageData = {
     
     // 首页价格报告页面（带预览卡片）
     homePriceReport: {
-        title: '小麦价格报告',
+        title: '小麦价格趋势分析',
         subtitle: '',
         content: `
             <div class="mobile-page home-price-report-page">
@@ -1258,7 +1261,7 @@ const pageData = {
                         <i class="fas fa-arrow-left"></i>
                     </button>
                     <div class="header-title">
-                        <h1 id="homePriceReportTitle">小麦价格报告</h1>
+                        <h1 id="homePriceReportTitle">小麦价格趋势分析</h1>
                     </div>
                 </div>
                 <div class="home-price-report-content" id="homePriceReportContent">
@@ -1286,6 +1289,27 @@ const pageData = {
                     </button>
                 </div>
                 <div class="price-report-content" id="priceReportContent">
+                    <!-- 内容将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        `
+    },
+    
+    // 价格历史报告列表页面
+    priceHistory: {
+        title: '历史报告',
+        subtitle: '',
+        content: `
+            <div class="mobile-page price-history-page">
+                <div class="mobile-header">
+                    <button class="back-btn" onclick="goBack()">
+                        <i class="fas fa-arrow-left"></i>
+                    </button>
+                    <div class="header-title">
+                        <h1>历史报告</h1>
+                    </div>
+                </div>
+                <div class="mobile-content price-history-content" id="priceHistoryContent">
                     <!-- 内容将通过JavaScript动态生成 -->
                 </div>
             </div>
@@ -11824,8 +11848,14 @@ function generateHomePriceReportPreview(container, productName, region) {
     const changeClass = data.change >= 0 ? 'positive' : 'negative';
     const changeIcon = data.change >= 0 ? 'fa-arrow-up' : 'fa-arrow-down';
     
-    // 计算平均价格
-    const avgPrice = (data.historyData.reduce((sum, item) => sum + item.price, 0) / data.historyData.length).toFixed(2);
+    // 计算7日均价
+    const avgPrice7d = (data.historyData.reduce((sum, item) => sum + item.price, 0) / data.historyData.length).toFixed(2);
+    
+    // 计算昨日价格（取历史数据倒数第二个）
+    const yesterdayPrice = data.historyData.length >= 2 ? data.historyData[data.historyData.length - 2].price.toFixed(2) : data.currentPrice.toFixed(2);
+    
+    // 今日均价（使用当前价格）
+    const todayAvgPrice = data.currentPrice.toFixed(2);
     
     container.innerHTML = `
         <!-- 预览卡片 -->
@@ -11837,31 +11867,44 @@ function generateHomePriceReportPreview(container, productName, region) {
             
             <div class="preview-card-header">
                 <div class="preview-card-title">
-                    <h3>${productName}价格分析报告</h3>
+                    <h3>${productName}价格趋势分析</h3>
                     <span class="preview-card-date">${new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                 </div>
             </div>
             
             <div class="preview-card-body">
-                <div class="preview-info-row">
-                    <div class="preview-info-item">
-                        <span class="info-label">所在城市</span>
-                        <span class="info-value">${displayRegion}</span>
+                <!-- 核心4字段展示区 -->
+                <div class="preview-core-metrics">
+                    <div class="core-metric-item highlight">
+                        <span class="metric-label">今日均价</span>
+                        <span class="metric-value">¥${todayAvgPrice}</span>
+                        <span class="metric-unit">/斤</span>
                     </div>
-                    <div class="preview-info-item">
-                        <span class="info-label">种植作物</span>
-                        <span class="info-value">${productName}</span>
+                    <div class="core-metric-item">
+                        <span class="metric-label">近7日均价</span>
+                        <span class="metric-value">¥${avgPrice7d}</span>
+                        <span class="metric-unit">/斤</span>
+                    </div>
+                    <div class="core-metric-item">
+                        <span class="metric-label">昨日价格</span>
+                        <span class="metric-value">¥${yesterdayPrice}</span>
+                        <span class="metric-unit">/斤</span>
+                    </div>
+                    <div class="core-metric-item ${changeClass}">
+                        <span class="metric-label">较昨日涨幅</span>
+                        <span class="metric-value">${data.change >= 0 ? '+' : ''}${data.changePercent}%</span>
+                        <i class="fas ${changeIcon} metric-icon"></i>
                     </div>
                 </div>
                 
-                <div class="preview-info-row">
+                <div class="preview-info-row compact">
                     <div class="preview-info-item">
-                        <span class="info-label">历史数据周期</span>
-                        <span class="info-value">2009-2025</span>
+                        <span class="info-label">地区</span>
+                        <span class="info-value">${displayRegion}</span>
                     </div>
                     <div class="preview-info-item">
-                        <span class="info-label">生成日期</span>
-                        <span class="info-value">${new Date().toLocaleDateString('zh-CN', { month: 'numeric', day: 'numeric' })}</span>
+                        <span class="info-label">作物</span>
+                        <span class="info-value">${productName}</span>
                     </div>
                 </div>
                 
@@ -11879,21 +11922,6 @@ function generateHomePriceReportPreview(container, productName, region) {
                 <div class="preview-conclusion">
                     <h4>短期预测</h4>
                     <p>${data.shortTermForecast || '预计未来3-5天价格将' + (data.change >= 0 ? '保持上涨态势' : '继续小幅回调') + '，建议密切关注市场动态。'}</p>
-                </div>
-                
-                <div class="preview-price-summary">
-                    <div class="price-summary-item">
-                        <span class="summary-label">当前价格</span>
-                        <span class="summary-value price-current">¥${data.currentPrice}/斤</span>
-                    </div>
-                    <div class="price-summary-item">
-                        <span class="summary-label">平均价格</span>
-                        <span class="summary-value">¥${avgPrice}/斤</span>
-                    </div>
-                    <div class="price-summary-item">
-                        <span class="summary-label">涨跌幅度</span>
-                        <span class="summary-value ${changeClass}">${data.change >= 0 ? '+' : ''}${data.changePercent}%</span>
-                    </div>
                 </div>
             </div>
             
@@ -12363,13 +12391,30 @@ function generatePriceAnalysisReport(container, productName, region) {
     const regionData = data.regionData || [];
     const availableRegions = regionData.map(r => r.region);
     
+    // 计算7日价格统计
+    const avg7d = (data.historyData.reduce((sum, item) => sum + item.price, 0) / data.historyData.length).toFixed(2);
+    const max7d = Math.max(...data.historyData.map(item => item.price)).toFixed(2);
+    const min7d = Math.min(...data.historyData.map(item => item.price)).toFixed(2);
+    
+    // 计算近一个月价格统计（模拟数据，实际应从后端获取）
+    const monthlyData = generateMonthlyPriceData(data.currentPrice);
+    const avgMonth = monthlyData.avg.toFixed(2);
+    const maxMonth = monthlyData.max.toFixed(2);
+    const minMonth = monthlyData.min.toFixed(2);
+    
+    // 数据更新日期（取最新数据时间）
+    const dataUpdateDate = new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' });
+    
     container.innerHTML = `
         <!-- 预览卡片 -->
         <div class="price-report-preview-card">
             <div class="preview-header">
                 <div class="preview-title-section">
                     <h2><i class="fas fa-file-alt"></i> ${productName}价格日报</h2>
-                    <div class="preview-date">${new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
+                    <div class="preview-date">
+                        <span class="date-label">数据更新日期：</span>
+                        <span class="date-value">${dataUpdateDate}</span>
+                    </div>
                 </div>
                 <div class="preview-region-display">
                     <span class="region-tag">${data.region}</span>
@@ -12406,20 +12451,39 @@ function generatePriceAnalysisReport(container, productName, region) {
                         <canvas id="priceReportTrendChart" width="360" height="200"></canvas>
                     </div>
                     <div class="chart-legend">
-                        <span class="legend-item"><span class="legend-dot history"></span>历史价格</span>
+                        <span class="legend-item"><span class="legend-dot history"></span>近七日价格</span>
                     </div>
                     <div class="chart-summary">
                         <div class="summary-item">
-                            <span class="label">7日均价</span>
-                            <span class="value">¥${(data.historyData.reduce((sum, item) => sum + item.price, 0) / data.historyData.length).toFixed(2)}</span>
+                            <span class="label">近七日均价</span>
+                            <span class="value">¥${avg7d}</span>
                         </div>
                         <div class="summary-item">
-                            <span class="label">最高价</span>
-                            <span class="value">¥${Math.max(...data.historyData.map(item => item.price)).toFixed(2)}</span>
+                            <span class="label">七日最高价</span>
+                            <span class="value">¥${max7d}</span>
                         </div>
                         <div class="summary-item">
-                            <span class="label">最低价</span>
-                            <span class="value">¥${Math.min(...data.historyData.map(item => item.price)).toFixed(2)}</span>
+                            <span class="label">七日最低价</span>
+                            <span class="value">¥${min7d}</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 近一个月价格统计 -->
+                <div class="report-chart-section monthly-section">
+                    <h4><i class="fas fa-calendar-alt"></i> 近一个月价格</h4>
+                    <div class="chart-summary monthly-summary">
+                        <div class="summary-item">
+                            <span class="label">近一个月均价</span>
+                            <span class="value">¥${avgMonth}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">月最高价</span>
+                            <span class="value">¥${maxMonth}</span>
+                        </div>
+                        <div class="summary-item">
+                            <span class="label">月最低价</span>
+                            <span class="value">¥${minMonth}</span>
                         </div>
                     </div>
                 </div>
@@ -12514,6 +12578,14 @@ function generatePriceAnalysisReport(container, productName, region) {
                         <i class="fas fa-info-circle"></i>
                         <span>以上分析基于AI数据分析和市场洞察，仅供参考，不构成投资建议。市场价格受多种因素影响，实际交易请结合当地市场情况谨慎决策。</span>
                     </div>
+                </div>
+                
+                <!-- 底部操作区 -->
+                <div class="report-footer-actions">
+                    <button class="refresh-report-btn" onclick="refreshPriceReport('${productName}', '${region}')">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>重新生成/更新数据</span>
+                    </button>
                 </div>
             </div>
         </div>
@@ -12623,6 +12695,205 @@ function drawPriceReportChart(data) {
 function switchPriceRegion(productName, region) {
     // 重新加载报告
     initPriceReport(productName, region);
+}
+
+// 生成月度价格数据（模拟数据）
+function generateMonthlyPriceData(currentPrice) {
+    // 模拟近一个月的价格波动
+    const basePrice = currentPrice;
+    const fluctuation = 0.15; // 15%波动范围
+    
+    const prices = [];
+    for (let i = 0; i < 30; i++) {
+        const randomFactor = 1 + (Math.random() - 0.5) * fluctuation;
+        prices.push(basePrice * randomFactor);
+    }
+    
+    return {
+        avg: prices.reduce((sum, p) => sum + p, 0) / prices.length,
+        max: Math.max(...prices),
+        min: Math.min(...prices)
+    };
+}
+
+// 刷新价格报告
+function refreshPriceReport(productName, region) {
+    const container = document.getElementById('priceReportContent');
+    if (!container) return;
+    
+    // 显示刷新加载状态
+    showNotification('正在更新数据...', 'info');
+    
+    // 模拟刷新延迟
+    setTimeout(() => {
+        generatePriceAnalysisReport(container, productName, region);
+        showNotification('数据已更新', 'success');
+    }, 1500);
+}
+
+// 历史报告数据（模拟）
+const priceHistoryReports = [
+    {
+        id: 1,
+        productName: '小麦',
+        region: '河南',
+        date: '2026-01-15',
+        avgPrice: 2.65,
+        change: 0.08,
+        changePercent: 3.1,
+        trend: 'up'
+    },
+    {
+        id: 2,
+        productName: '小麦',
+        region: '河南',
+        date: '2026-01-14',
+        avgPrice: 2.57,
+        change: 0.05,
+        changePercent: 2.0,
+        trend: 'up'
+    },
+    {
+        id: 3,
+        productName: '小麦',
+        region: '河南',
+        date: '2026-01-13',
+        avgPrice: 2.52,
+        change: -0.03,
+        changePercent: -1.2,
+        trend: 'down'
+    },
+    {
+        id: 4,
+        productName: '小麦',
+        region: '河南',
+        date: '2026-01-12',
+        avgPrice: 2.55,
+        change: 0.02,
+        changePercent: 0.8,
+        trend: 'up'
+    },
+    {
+        id: 5,
+        productName: '小麦',
+        region: '河南',
+        date: '2026-01-11',
+        avgPrice: 2.53,
+        change: 0.04,
+        changePercent: 1.6,
+        trend: 'up'
+    },
+    {
+        id: 6,
+        productName: '小麦',
+        region: '河南',
+        date: '2026-01-10',
+        avgPrice: 2.49,
+        change: -0.02,
+        changePercent: -0.8,
+        trend: 'down'
+    },
+    {
+        id: 7,
+        productName: '小麦',
+        region: '河南',
+        date: '2026-01-09',
+        avgPrice: 2.51,
+        change: 0.01,
+        changePercent: 0.4,
+        trend: 'up'
+    }
+];
+
+// 加载价格历史报告页面
+function loadPriceHistoryPage(productName) {
+    loadPage('priceHistory');
+    
+    setTimeout(() => {
+        const container = document.getElementById('priceHistoryContent');
+        if (!container) return;
+        
+        renderPriceHistoryList(container, productName);
+    }, 100);
+}
+
+// 渲染历史报告列表
+function renderPriceHistoryList(container, productName) {
+    const reports = priceHistoryReports.filter(r => r.productName === productName);
+    
+    container.innerHTML = `
+        <div class="history-list-header">
+            <div class="history-stats">
+                <div class="stat-item">
+                    <span class="stat-value">${reports.length}</span>
+                    <span class="stat-label">历史报告</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">${reports.filter(r => r.trend === 'up').length}</span>
+                    <span class="stat-label">上涨天数</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-value">${reports.filter(r => r.trend === 'down').length}</span>
+                    <span class="stat-label">下跌天数</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="history-report-list">
+            ${reports.map(report => `
+                <div class="history-report-item" onclick="viewHistoryReport(${report.id})">
+                    <div class="report-date-section">
+                        <div class="report-date">${formatHistoryDate(report.date)}</div>
+                        <div class="report-weekday">${getWeekday(report.date)}</div>
+                    </div>
+                    <div class="report-info-section">
+                        <div class="report-title">${report.productName}价格日报</div>
+                        <div class="report-region">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>${report.region}地区</span>
+                        </div>
+                    </div>
+                    <div class="report-price-section">
+                        <div class="report-avg-price">¥${report.avgPrice.toFixed(2)}</div>
+                        <div class="report-change ${report.trend === 'up' ? 'positive' : 'negative'}">
+                            <i class="fas ${report.trend === 'up' ? 'fa-arrow-up' : 'fa-arrow-down'}"></i>
+                            <span>${report.change >= 0 ? '+' : ''}${report.changePercent}%</span>
+                        </div>
+                    </div>
+                    <div class="report-arrow">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        
+        <div class="history-tips">
+            <i class="fas fa-info-circle"></i>
+            <span>历史报告数据保留最近7天，更早的数据请联系客服获取</span>
+        </div>
+    `;
+}
+
+// 格式化历史日期
+function formatHistoryDate(dateStr) {
+    const date = new Date(dateStr);
+    return `${date.getMonth() + 1}月${date.getDate()}日`;
+}
+
+// 获取星期几
+function getWeekday(dateStr) {
+    const weekdays = ['周日', '周一', '周二', '周三', '周四', '周五', '周六'];
+    const date = new Date(dateStr);
+    return weekdays[date.getDay()];
+}
+
+// 查看历史报告详情
+function viewHistoryReport(reportId) {
+    const report = priceHistoryReports.find(r => r.id === reportId);
+    if (!report) return;
+    
+    // 跳转到报告详情页
+    enterPriceReport(report.productName, report.region);
 }
 
 // ==================== 历史价格查询模块 ====================

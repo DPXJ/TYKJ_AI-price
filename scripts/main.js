@@ -186,9 +186,10 @@ const pageData = {
                                     </div>
                                     <div class="price-value">
                                         <div class="price-current">¥2.65<span class="price-unit">/斤</span></div>
+                                        <div class="price-date">2026-01-15</div>
                                         <div class="price-change positive">
                                             <i class="fas fa-arrow-up"></i>
-                                            <span>+0.08 (+3.1%)</span>
+                                            <span>上涨 +0.08</span>
                                         </div>
                                     </div>
                                 </div>
